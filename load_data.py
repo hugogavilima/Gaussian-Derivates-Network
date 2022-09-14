@@ -1,7 +1,9 @@
+from ast import GtE
 import tensorflow
 from tensorflow import keras as nn
 import numpy as np
 import h5py
+from skimage import io
 
 """
 mLoad_dataset:
@@ -12,7 +14,7 @@ mLoad_dataset:
     de todos estos tensores.  
 
 """
-def mLoad_dataset(paths, n = 4):
+def mLoad_GT(paths, n = 4):
     
     #Cargamos el array usando su ubicacion. Sabemos que esta guardados en un h5file
     GT_lts = []
@@ -32,7 +34,35 @@ def mLoad_dataset(paths, n = 4):
         GT = np.asarray([GT])
         
         #Anadimosla dimension extra
-        swapped = np.moveaxis(GT, 0, 2)  # shape (y_pixels, x_pixels, n_bands)
+        swapped = np.moveaxis(GT, 0, 2)  
+        arr4d = np.expand_dims(swapped, 0)
+        GT_lts[i] = arr4d    
+        
+    
+    tt = nn.layers.Concatenate(axis=0)(GT_lts)  
+    return tt
+    
+def mLoad_Img(paths, n = 4):
+    
+    #Cargamos el array usando su ubicacion. Sabemos que esta guardados en un h5file
+    GT_lts = []
+    for path in paths[0:n]:
+        img_path = str(path).replace('.h5','.jpg').replace('ground_truth_density','images').replace('GT_IMG_', 'IMG_')
+        img = io.imread(img_path, as_gray=True)
+        GT_lts.append(np.asarray([img.astype(np.float64)]))
+    
+    #Obtenemos el shape maximo 
+    mx, my = max_shape(GT_lts)
+    
+    
+    for i in range(len(GT_lts)):
+        #Anadimos el path
+        GT = GT_lts[i]
+        GT = tensorflow.pad(GT[0,:,:], pad_Tensor([mx, my], GT.shape[1:]), "CONSTANT")
+        GT = np.asarray([GT])
+        
+        #Anadimosla dimension extra
+        swapped = np.moveaxis(GT, 0, 2)  
         arr4d = np.expand_dims(swapped, 0)
         GT_lts[i] = arr4d    
         
