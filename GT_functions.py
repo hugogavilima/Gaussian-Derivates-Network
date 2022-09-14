@@ -3,7 +3,7 @@ from scipy.ndimage.filters import gaussian_filter
 from scipy.spatial import KDTree
 from progressbar import progressbar 
 from scipy import io 
-from matplotlib import pyplot as plt
+import skimage
 import h5py
 from pathlib import Path
 
@@ -63,7 +63,7 @@ def GT_generation(img_paths):
     for img_path in progress(img_paths):
 
         mat = io.loadmat(str(img_path).replace('.jpg','.mat').replace('images','ground_truth').replace('IMG_','GT_IMG_'))
-        img = plt.imread(img_path)
+        img = skimage.io.imread(img_path, as_gray = True)
 
         #aqui solo tomamos el alto y el ancho de la imagen
         k = np.zeros((img.shape[0],img.shape[1]))
