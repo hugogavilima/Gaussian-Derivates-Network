@@ -59,7 +59,7 @@ GT_generation:
 """
 def GT_generation(img_paths):
     progress = progressbar.ProgressBar()
-
+    path_names = []
     for img_path in progress(img_paths):
 
         mat = io.loadmat(str(img_path).replace('.jpg','.mat').replace('images','ground_truth').replace('IMG_','GT_IMG_'))
@@ -78,9 +78,7 @@ def GT_generation(img_paths):
                 k[int(gt[i][1]), int(gt[i][0])] = 1
 
 
-        fg, distance = gaussian_filter_density(k)
-
-        path_names = []
+        fg, distance = gaussian_filter_density(k)      
         name = str(img_path).replace('.jpg','.h5').replace('images','ground_truth_density')
         with h5py.File(name, 'w') as hf:
             hf['density'] = k
