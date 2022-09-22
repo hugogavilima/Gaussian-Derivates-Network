@@ -31,5 +31,7 @@ class Betsy(tf.keras.Model):
     y = tf.keras.layers.Input(shape = input_shape)
     return tf.keras.Model(inputs=[y], 
                           outputs=self.call(y))
-    
-    
+
+
+
+

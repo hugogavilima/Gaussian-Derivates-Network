@@ -39,7 +39,7 @@ def gaussian_filter_density(gts):
 
         distances, locations = tree.query(pt, k=5)
         if gt_count > 1:
-           sigma = (distances.mean())*0.3
+           sigma = (distances.mean())
            #sigma = 1
         else:
            sigma = np.average(np.array(gts.shape))/2./2. #case: 1 point
