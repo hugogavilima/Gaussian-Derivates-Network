@@ -1,4 +1,3 @@
-from ast import GtE
 import tensorflow
 from tensorflow import keras as nn
 import numpy as np
