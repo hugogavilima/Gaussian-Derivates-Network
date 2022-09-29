@@ -20,6 +20,10 @@ class Betsy(tf.keras.Model):
     self.output_layer = tf.keras.layers.Conv2D(1,1, 
                                                activation='relu',
                                                input_shape = (input_shape[0], input_shape[1], 64))
+    self.train_op = tf.keras.optimizers.Adam(learning_rate = 0.01)
+    
+    self.sMAE = sMAE()
+    self.RMSE = RMSE()
 
 
   def call(self, input):
@@ -28,17 +32,87 @@ class Betsy(tf.keras.Model):
     x = self.gaussian2(x)
     x = tf.keras.layers.Activation('relu')(x)
     return self.output_layer(x)
+
+  def get_loss(self, train_image, test_GT):
+    train_pred_GT = self.call(train_image)
+    return GAME_loss(train_pred_GT, test_GT)
+  
+  def get_sMAE(self, train_image, test_GT):
+    
+    train_pred_GT = self.call(train_image)
+    self.sMAE.reset_state()
+    self.sMAE.update_state(test_GT, train_pred_GT)
+    
+    return self.sMAE.result()
+
+  def get_grad(self, train_image, test_GT):
+    with tf.GradientTape() as tape:
+        tape.watch(self.gaussian1.variables)
+        tape.watch(self.gaussian2.variables)
+        tape.watch(self.output_layer.variables)
+        L = self.get_loss(train_image, test_GT)
+        g = tape.gradient(L, self.gaussian1.variables + self.gaussian2.variables)
+    return g 
   
   def build_graph(self, input_shape):
     y = tf.keras.layers.Input(shape = input_shape)
     return tf.keras.Model(inputs=[y], 
                           outputs=self.call(y))
     
-  def 
+
+class sMAE(tf.keras.metrics.Metric):
+
+  def __init__(self, name= 'sMAE', **kwargs):
+    super(sMAE, self).__init__(name=name, **kwargs)
+    self.true_positives = self.add_weight(name='tp', initializer='zeros')
+
+  def update_state(self, y_true, y_pred, sample_weight=None):
     
+    res2 = tf.constant(0, dtype=np.float32)
+    for i in range(len(y_pred)):
+      res2 = res2 + (GAME_recursive(y_pred[i], y_true[i], 0, 0))
+      
+    values = tf.math.divide(res2, tf.cast(9, tf.float32))
+    values = tf.cast(values, self.dtype)
+    
+    if sample_weight is not None:
+      sample_weight = tf.cast(1, self.dtype)
+      sample_weight = tf.broadcast_to(sample_weight, values.shape)
+      values = tf.multiply(values, sample_weight)
+      
+    self.true_positives.assign_add(values)
+
+  def result(self):
+    return self.true_positives
+
+class RMSE(tf.keras.metrics.Metric):
+
+  def __init__(self, name= 'RMSE', **kwargs):
+    super(RMSE, self).__init__(name=name, **kwargs)
+    self.true_positives = self.add_weight(name='tp', initializer='zeros')
+    
+  def update_state(self, y_true, y_pred, sample_weight=None):
+    res2 = tf.constant(0, dtype=np.float32)
+    for i in range(len(y_pred)):
+      bb = GAME_recursive(y_pred[i], y_true[i], 0, 0)
+      res2 = res2 + tf.math.square(bb)
+      
+    values = tf.math.divide(res2, tf.cast(9, tf.float32))
+    values = tf.math.sqrt(values)
+    values = tf.cast(values, self.dtype)
+    
+    if sample_weight is not None:
+      sample_weight = tf.cast(1, self.dtype)
+      sample_weight = tf.broadcast_to(sample_weight, values.shape)
+      values = tf.multiply(values, sample_weight)
+      
+    self.true_positives.assign_add(values)
+
+  def result(self):
+    return self.true_positives
 
 
- 
+
  
 def adjust_dim(array):
     if array.shape[0]%2 != 0:
@@ -54,11 +128,14 @@ def four_split_tf(mtf):
     
     x2, y2 = x//2, y//2, 
     
-    mtf4 = tf.constant(np.array([mtf[0:x2, 0:y2, :],
-                                    mtf[0:x2, y2:, :],
-                                    mtf[x2:, 0:y2, :],
-                                    mtf[x2:, y2:, :]]), shape = [4, x2, y2, 1])
-    return mtf4  
+    mtf4 = tf.constant(0, shape = [4, x2, y2, 1], dtype= tf.float32)
+    sumi = tf.concat([tf.expand_dims(mtf[0:x2, 0:y2, :], axis=0),
+                      tf.expand_dims(mtf[0:x2, y2:, :], axis=0),
+                      tf.expand_dims(mtf[x2:, 0:y2, :], axis=0),
+                      tf.expand_dims(mtf[x2:, y2:, :], axis=0)], 0)
+    mtf4 = mtf4 + sumi
+    
+    return mtf4
 
 
 def GAME_recursive(density, gt, currentLevel, targetLevel):
@@ -75,16 +152,20 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
         
                
         currentLevel = currentLevel + 1 
-        res = tf.Variable(0, dtype=np.float32)
+        res = tf.constant(0, dtype=np.float32)
         for a in range(4):
-            res.assign_add(GAME_recursive(density_slice[a], gt_slice[a], currentLevel, targetLevel))
+            res = res + (GAME_recursive(density_slice[a], gt_slice[a], currentLevel, targetLevel))
         
         return res
 
-def GAME_metric(preds, gts, l = 0):
-	res2 = tf.Variable(0, dtype=np.float32)
-	for i in range(len(gts)):
-		res2.assign_add(GAME_recursive(preds[i], gts[i], 0, l))
-	return tf.math.divide(res2, len(gts))
+def GAME_loss(preds, gts):
+  res2 = tf.constant(0, dtype=np.float32)
+  for i in range(len(gts)):
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 2))
+  return tf.math.divide(res2, tf.cast(9, tf.float32))
+  
+
+  
+
 
 
