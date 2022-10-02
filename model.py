@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import matplotlib.pyplot as plt 
 from FTGDConvLayer import *
 
 class Betsy(tf.keras.Model):
@@ -72,13 +73,13 @@ class sMAE(tf.keras.metrics.Metric):
     for i in range(len(y_pred)):
       res2 = res2 + (GAME_recursive(y_pred[i], y_true[i], 0, 0))
       
-    values = tf.math.divide(res2, tf.cast(9, tf.float32))
+    values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
     values = tf.cast(values, self.dtype)
     
     if sample_weight is not None:
-      sample_weight = tf.cast(1, self.dtype)
+      sample_weight = tf.cast(sample_weight, self.dtype)
       sample_weight = tf.broadcast_to(sample_weight, values.shape)
-      values = tf.multiply(values, sample_weight)
+      #values = tf.multiply(values, sample_weight)
       
     self.true_positives.assign_add(values)
 
@@ -97,14 +98,14 @@ class RMSE(tf.keras.metrics.Metric):
       bb = GAME_recursive(y_pred[i], y_true[i], 0, 0)
       res2 = res2 + tf.math.square(bb)
       
-    values = tf.math.divide(res2, tf.cast(9, tf.float32))
+    values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
     values = tf.math.sqrt(values)
     values = tf.cast(values, self.dtype)
     
     if sample_weight is not None:
-      sample_weight = tf.cast(1, self.dtype)
+      sample_weight = tf.cast(sample_weight, self.dtype)
       sample_weight = tf.broadcast_to(sample_weight, values.shape)
-      values = tf.multiply(values, sample_weight)
+      #values = tf.multiply(values, sample_weight)
       
     self.true_positives.assign_add(values)
 
@@ -161,9 +162,38 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 2))
-  return tf.math.divide(res2, tf.cast(9, tf.float32))
-  
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 0))
+  return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
+
+
+
+#Corriegele, esta funcion debe tambien tomar el path de la imagen, y con esto hacerle el grafico. 
+#Esta función ebe ser más propia para identificar el path de la imagen. 
+def plotting(i, test_img):
+    font = {'color':  'black','weight': 'normal','size': 16}
+
+    fig = plt.figure(figsize=(16, 4), constrained_layout=True)
+    ax1 = fig.add_subplot(1,3,1)
+    ax1.imshow(test_img[i,:,:,0], cmap = 'gray')
+    ax1.axis('off')
+    ax1.set_title('Imagen Real', fontdict=font)
+    ax1.text(0.1, -0.1, 'right bottom',
+            horizontalalignment='right',
+            verticalalignment='top',
+            transform=ax1.transAxes, )
+
+    ax2 = fig.add_subplot(1,3,2)
+    ax2.set_title('GT', fontdict=font)
+    ax2.imshow(test_GT[i,:,:,0], interpolation='gaussian')
+    ax2.axis('off')
+
+    ax3 = fig.add_subplot(1,3,3)
+    ax3.set_title('Densidad Estimada', fontdict=font)
+    ax3.imshow(tt[i,:,:,0], interpolation='gaussian')
+    ax3.axis('off')
+
+
+    fig.savefig('plots/test_' + str(i) + '.png')
 
   
 

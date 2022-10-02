@@ -39,7 +39,7 @@ def gaussian_filter_density(gts):
 
         distances, locations = tree.query(pt, k=5)
         if gt_count > 1:
-           sigma = (distances.mean())
+           sigma = (distances[1] + distances[2] + distances[3])*0.1
            #sigma = 1
         else:
            sigma = np.average(np.array(gts.shape))/2./2. #case: 1 point
@@ -81,7 +81,7 @@ def GT_generation(img_paths):
         fg, distance = gaussian_filter_density(k)      
         name = str(img_path).replace('.jpg','.h5').replace('images','ground_truth_density')
         with h5py.File(name, 'w') as hf:
-            hf['density'] = k
+            hf['density'] = fg
             hf['distance'] = distance
 
         path_names.append(name)
