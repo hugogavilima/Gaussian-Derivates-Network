@@ -7,17 +7,62 @@ class Betsy(tf.keras.Model):
 
   def __init__(self, input_shape):
     super().__init__()
-    self.gaussian1 = FTGDConvLayer(filters=16, 
-                                   kernel_size = (7,7), 
-                                   num_basis= 4, 
+    self.gaussian1 = FTGDConvLayer(filters=12, 
+                                   kernel_size = (10,10), 
+                                   num_basis= 1, 
                                    order=2, 
-                                   separated = True, 
+                                   separated = False,
+                                   trainability=[False, True, True],
+                                   sigma_init= 0.9*(1.25)**(1),
+                                   random_init=False, 
+                                   use_bias=False,
                                    name = 'Gaussian1')
-    self.gaussian2 = FTGDConvLayer(filters=32, 
-                                   kernel_size = (7,7), 
-                                   num_basis= 8, 
-                                   order=2,  
+
+    self.gaussian2 = FTGDConvLayer(filters=14, 
+                                   kernel_size = (10,10), 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, True, True],
+                                   sigma_init= 0.9*(1.25)**(2),
+                                   random_init=False, 
+                                   use_bias=False,
                                    name = 'Gaussian2')
+    
+    self.gaussian3 = FTGDConvLayer(filters=16, 
+                                   kernel_size = (10,10), 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, True, True],
+                                   sigma_init= 0.9*(1.25)**(3),
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian3')
+    
+    self.gaussian4 = FTGDConvLayer(filters=20, 
+                                   kernel_size = (10,10), 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, True, True],
+                                   sigma_init= 0.9*(1.25)**(4),
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian4')
+    
+    self.gaussian5 = FTGDConvLayer(filters=64, 
+                                   kernel_size = (10,10), 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, True, True],
+                                   sigma_init= 0.9*(1.25)**(5),
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian5')
+    
+  
     self.output_layer = tf.keras.layers.Conv2D(1,1, 
                                                activation='relu',
                                                input_shape = (input_shape[0], input_shape[1], 64))
@@ -32,6 +77,12 @@ class Betsy(tf.keras.Model):
     x = tf.keras.layers.Activation('relu')(x)
     x = self.gaussian2(x)
     x = tf.keras.layers.Activation('relu')(x)
+    x = self.gaussian3(x)
+    x = tf.keras.layers.Activation('relu')(x)
+    x = self.gaussian4(x)
+    x = tf.keras.layers.Activation('relu')(x)
+    x = self.gaussian5(x)
+    x = tf.keras.layers.Activation('relu')(x)  
     return self.output_layer(x)
 
   def get_loss(self, train_image, test_GT):
@@ -46,21 +97,11 @@ class Betsy(tf.keras.Model):
     
     return self.sMAE.result()
 
-  def get_grad(self, train_image, test_GT):
-    with tf.GradientTape() as tape:
-        tape.watch(self.gaussian1.variables)
-        tape.watch(self.gaussian2.variables)
-        tape.watch(self.output_layer.variables)
-        L = self.get_loss(train_image, test_GT)
-        g = tape.gradient(L, self.gaussian1.variables + self.gaussian2.variables)
-    return g 
-  
   def build_graph(self, input_shape):
     y = tf.keras.layers.Input(shape = input_shape)
     return tf.keras.Model(inputs=[y], 
                           outputs=self.call(y))
-    
-
+  
 class sMAE(tf.keras.metrics.Metric):
 
   def __init__(self, name= 'sMAE', **kwargs):
@@ -162,40 +203,10 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 0))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 1))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 
-
-#Corriegele, esta funcion debe tambien tomar el path de la imagen, y con esto hacerle el grafico. 
-#Esta función ebe ser más propia para identificar el path de la imagen. 
-def plotting(i, test_img):
-    font = {'color':  'black','weight': 'normal','size': 16}
-
-    fig = plt.figure(figsize=(16, 4), constrained_layout=True)
-    ax1 = fig.add_subplot(1,3,1)
-    ax1.imshow(test_img[i,:,:,0], cmap = 'gray')
-    ax1.axis('off')
-    ax1.set_title('Imagen Real', fontdict=font)
-    ax1.text(0.1, -0.1, 'right bottom',
-            horizontalalignment='right',
-            verticalalignment='top',
-            transform=ax1.transAxes, )
-
-    ax2 = fig.add_subplot(1,3,2)
-    ax2.set_title('GT', fontdict=font)
-    ax2.imshow(test_GT[i,:,:,0], interpolation='gaussian')
-    ax2.axis('off')
-
-    ax3 = fig.add_subplot(1,3,3)
-    ax3.set_title('Densidad Estimada', fontdict=font)
-    ax3.imshow(tt[i,:,:,0], interpolation='gaussian')
-    ax3.axis('off')
-
-
-    fig.savefig('plots/test_' + str(i) + '.png')
-
-  
 
 
 
