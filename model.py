@@ -5,59 +5,59 @@ from FTGDConvLayer import *
 
 class Betsy(tf.keras.Model):
 
-  def __init__(self, input_shape):
+  def __init__(self, input_shape, input_sigmas, input_kernel_size):
     super().__init__()
     self.gaussian1 = FTGDConvLayer(filters=12, 
-                                   kernel_size = (10,10), 
+                                   kernel_size = input_kernel_size,   
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, True, True],
-                                   sigma_init= 0.9*(1.25)**(1),
+                                   sigma_init= input_sigmas[0],
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian1')
 
     self.gaussian2 = FTGDConvLayer(filters=14, 
-                                   kernel_size = (10,10), 
+                                   kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, True, True],
-                                   sigma_init= 0.9*(1.25)**(2),
+                                   sigma_init= input_sigmas[1],
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian2')
     
     self.gaussian3 = FTGDConvLayer(filters=16, 
-                                   kernel_size = (10,10), 
+                                   kernel_size = input_kernel_size,  
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, True, True],
-                                   sigma_init= 0.9*(1.25)**(3),
+                                   sigma_init= input_sigmas[2],
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian3')
     
     self.gaussian4 = FTGDConvLayer(filters=20, 
-                                   kernel_size = (10,10), 
+                                   kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, True, True],
-                                   sigma_init= 0.9*(1.25)**(4),
+                                   sigma_init= input_sigmas[3],
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian4')
     
     self.gaussian5 = FTGDConvLayer(filters=64, 
-                                   kernel_size = (10,10), 
+                                   kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, True, True],
-                                   sigma_init= 0.9*(1.25)**(5),
+                                   sigma_init= input_sigmas[4],
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian5')
@@ -84,6 +84,13 @@ class Betsy(tf.keras.Model):
     x = self.gaussian5(x)
     x = tf.keras.layers.Activation('relu')(x)  
     return self.output_layer(x)
+  
+  def deploy(self):
+    self.gaussian1.deploy()
+    self.gaussian2.deploy()
+    self.gaussian3.deploy()
+    self.gaussian4.deploy()
+    self.gaussian5.deploy()
 
   def get_loss(self, train_image, test_GT):
     train_pred_GT = self.call(train_image)
@@ -203,7 +210,7 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 1))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 2))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 
