@@ -51,15 +51,34 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
 model.fit(train_img, 
           train_GT, 
           batch_size = batch_size, 
-          epochs = 6, 
-          validation_data=(test_img, test_GT), 
-          callbacks=[cp_callback])
+          epochs = 5, 
+          validation_data=(test_img, test_GT))
 
+print('Entrenamiento Terminado! \n')
 #latest = tf.train.latest_checkpoint(checkpoint_dir)
 #model.load_weights(latest)
-model.deploy()
-predict = model.predict(train_img)
+
+
+model.layers[0].deploy()
+model.layers[1].deploy()
+model.layers[2].deploy()
+model.layers[3].deploy()
+model.layers[4].deploy()
+
+dpy = {'G1 dpy': model.layers[0].deployed,
+       'G2 dpy': model.layers[1].deployed,
+       'G3 dpy': model.layers[2].deployed,
+       'G4 dpy': model.layers[3].deployed,
+       'G5 dpy': model.layers[4].deployed}
+print(dpy)
+
+print('Calculando Prediccion... \n')
+predict = model(test_img)
+print('Done!')
+
+print('Creando los ploting... \n')
 count_estimate(test_img, test_GT, predict, model)
+print('Done!')
     
     
     

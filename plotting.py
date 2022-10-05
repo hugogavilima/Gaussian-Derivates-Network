@@ -21,7 +21,7 @@ def count_estimate(test_img, test_gt, predict, model):
 def plotting_testing_01(test_img, test_GT, predict, GT_count, est_count, est_loss, est_MAE, i):
     font = {'color':  'black','weight': 'normal','size': 16}
 
-    fig = plt.figure(figsize=(16, 4), constrained_layout=True)
+    fig = plt.figure(figsize=(16, 5), constrained_layout=True)
     ax1 = fig.add_subplot(1,3,1)
     ax1.imshow(test_img, cmap = 'gray')
     ax1.axis('off')

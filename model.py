@@ -15,7 +15,7 @@ class Betsy(tf.keras.Model):
                                    trainability=[False, True, True],
                                    sigma_init= input_sigmas[0],
                                    random_init=False, 
-                                   use_bias=False,
+                                   use_bias=True,
                                    name = 'Gaussian1')
 
     self.gaussian2 = FTGDConvLayer(filters=14, 
@@ -53,44 +53,31 @@ class Betsy(tf.keras.Model):
     
     self.gaussian5 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=2, 
-                                   separated = False,
+                                   separated = True,
                                    trainability=[False, True, True],
                                    sigma_init= input_sigmas[4],
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian5')
     
-  
     self.output_layer = tf.keras.layers.Conv2D(1,1, 
                                                activation='relu',
                                                input_shape = (input_shape[0], input_shape[1], 64))
-    self.train_op = tf.keras.optimizers.Adam(learning_rate = 0.01)
-    
+       
     self.sMAE = sMAE()
     self.RMSE = RMSE()
 
 
   def call(self, input):
     x = self.gaussian1(input)
-    x = tf.keras.layers.Activation('relu')(x)
     x = self.gaussian2(x)
-    x = tf.keras.layers.Activation('relu')(x)
     x = self.gaussian3(x)
-    x = tf.keras.layers.Activation('relu')(x)
     x = self.gaussian4(x)
-    x = tf.keras.layers.Activation('relu')(x)
-    x = self.gaussian5(x)
-    x = tf.keras.layers.Activation('relu')(x)  
+    x = self.gaussian5(x) 
     return self.output_layer(x)
-  
-  def deploy(self):
-    self.gaussian1.deploy()
-    self.gaussian2.deploy()
-    self.gaussian3.deploy()
-    self.gaussian4.deploy()
-    self.gaussian5.deploy()
+   
 
   def get_loss(self, train_image, test_GT):
     train_pred_GT = self.call(train_image)
@@ -210,7 +197,7 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 2))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 1))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 
