@@ -12,7 +12,7 @@ class Betsy(tf.keras.Model):
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
-                                   trainability=[False, True, True],
+                                   trainability=[False, False, False],
                                    sigma_init= input_sigmas[0],
                                    random_init=False, 
                                    use_bias=True,
@@ -23,7 +23,7 @@ class Betsy(tf.keras.Model):
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
-                                   trainability=[False, True, True],
+                                   trainability=[False, False, False],
                                    sigma_init= input_sigmas[1],
                                    random_init=False, 
                                    use_bias=False,
@@ -34,7 +34,7 @@ class Betsy(tf.keras.Model):
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
-                                   trainability=[False, True, True],
+                                   trainability=[False, False, False],
                                    sigma_init= input_sigmas[2],
                                    random_init=False, 
                                    use_bias=False,
@@ -45,7 +45,7 @@ class Betsy(tf.keras.Model):
                                    num_basis= 1, 
                                    order=2, 
                                    separated = False,
-                                   trainability=[False, True, True],
+                                   trainability=[False, False, False],
                                    sigma_init= input_sigmas[3],
                                    random_init=False, 
                                    use_bias=False,
@@ -53,17 +53,16 @@ class Betsy(tf.keras.Model):
     
     self.gaussian5 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 4, 
+                                   num_basis= 1, 
                                    order=2, 
-                                   separated = True,
-                                   trainability=[False, True, True],
+                                   separated = False,
+                                   trainability=[False, False, False],
                                    sigma_init= input_sigmas[4],
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian5')
     
     self.output_layer = tf.keras.layers.Conv2D(1,1, 
-                                               activation='relu',
                                                input_shape = (input_shape[0], input_shape[1], 64))
        
     self.sMAE = sMAE()

@@ -23,19 +23,19 @@ test_img = mLoad_Img(paths_test, n=5)
 #Definimos los sigmas
 input_sigma = []
 for i in range(5):
-    input_sigma.append(0.8*(sqrt(2))**(i))
+    input_sigma.append(0.25*(sqrt(2))**(i))
     
 #Definimos el tamaño de nuestra imagen.   
 input_shape = train_img[0,:,:,:].shape
 
 #Creamos el modelo
-model = Betsy(input_shape= input_shape, input_sigmas= input_sigma, input_kernel_size=(9, 9))
+model = Betsy(input_shape= input_shape, input_sigmas= input_sigma, input_kernel_size=(7, 7))
 
 
 #model.build_graph(input_shape).summary()
 #Compliamos el modelo
 model.compile(loss = GAME_loss,
-              optimizer = tf.keras.optimizers.Adam(learning_rate = 0.01), 
+              optimizer = tf.keras.optimizers.Adam(learning_rate=5e-6), 
               metrics = [sMAE(), RMSE()])
 
 checkpoint_path = "training/cp-{epoch:04d}.ckpt"
@@ -45,14 +45,14 @@ batch_size = 10
 
 # Create a callback that saves the model's weights
 cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-                                                 save_weights_only=True,
                                                  verbose=1)
 
 model.fit(train_img, 
           train_GT, 
           batch_size = batch_size, 
-          epochs = 5, 
-          validation_data=(test_img, test_GT))
+          epochs = 50, 
+          validation_data=(test_img, test_GT),
+          callbacks=[cp_callback])
 
 print('Entrenamiento Terminado! \n')
 #latest = tf.train.latest_checkpoint(checkpoint_dir)
