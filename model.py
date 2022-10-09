@@ -15,7 +15,7 @@ class Betsy(tf.keras.Model):
                                    trainability=[False, False, False],
                                    sigma_init= input_sigmas[0],
                                    random_init=False, 
-                                   use_bias=True,
+                                   use_bias=False,
                                    name = 'Gaussian1')
 
     self.gaussian2 = FTGDConvLayer(filters=14, 
@@ -61,9 +61,21 @@ class Betsy(tf.keras.Model):
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian5')
-    
+
+    self.gaussian6 = FTGDConvLayer(filters=32, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, False, False],
+                                   sigma_init= input_sigmas[5],
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian6')
+       
     self.output_layer = tf.keras.layers.Conv2D(1,1, 
-                                               input_shape = (input_shape[0], input_shape[1], 64))
+                                               activation='relu',
+                                               input_shape = (input_shape[0], input_shape[1], 32))
        
     self.sMAE = sMAE()
     self.RMSE = RMSE()
@@ -74,7 +86,9 @@ class Betsy(tf.keras.Model):
     x = self.gaussian2(x)
     x = self.gaussian3(x)
     x = self.gaussian4(x)
+    #x = tf.keras.activations.sigmoid(x)
     x = self.gaussian5(x) 
+    x = self.gaussian6(x) 
     return self.output_layer(x)
    
 

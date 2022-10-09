@@ -22,20 +22,20 @@ test_img = mLoad_Img(paths_test, n=5)
 
 #Definimos los sigmas
 input_sigma = []
-for i in range(5):
-    input_sigma.append(0.25*(sqrt(2))**(i))
+for i in range(6):
+    input_sigma.append(0.2015*(sqrt(2))**(i))
     
 #Definimos el tamaño de nuestra imagen.   
 input_shape = train_img[0,:,:,:].shape
 
 #Creamos el modelo
-model = Betsy(input_shape= input_shape, input_sigmas= input_sigma, input_kernel_size=(7, 7))
+model = Betsy(input_shape= input_shape, input_sigmas= input_sigma, input_kernel_size=(6, 6))
 
 
 #model.build_graph(input_shape).summary()
 #Compliamos el modelo
 model.compile(loss = GAME_loss,
-              optimizer = tf.keras.optimizers.Adam(learning_rate=5e-6), 
+              optimizer = tf.keras.optimizers.Adam(learning_rate=5e-5), 
               metrics = [sMAE(), RMSE()])
 
 checkpoint_path = "training/cp-{epoch:04d}.ckpt"
@@ -51,8 +51,8 @@ model.fit(train_img,
           train_GT, 
           batch_size = batch_size, 
           epochs = 50, 
-          validation_data=(test_img, test_GT),
-          callbacks=[cp_callback])
+          validation_data=(test_img, test_GT))
+#         callbacks=[cp_callback])
 
 print('Entrenamiento Terminado! \n')
 #latest = tf.train.latest_checkpoint(checkpoint_dir)
@@ -64,6 +64,7 @@ model.layers[1].deploy()
 model.layers[2].deploy()
 model.layers[3].deploy()
 model.layers[4].deploy()
+model.layers[5].deploy()
 
 dpy = {'G1 dpy': model.layers[0].deployed,
        'G2 dpy': model.layers[1].deployed,
