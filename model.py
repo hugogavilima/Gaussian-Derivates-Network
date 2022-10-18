@@ -8,6 +8,8 @@ class Betsy(tf.keras.Model):
   def __init__(self, input_shape, input_sigmas, input_kernel_size):
     super().__init__()
     
+    
+    ##te quiero puta##
     ###################################################################
     # GAUSSIAN LAYERS
     ###################################################################
