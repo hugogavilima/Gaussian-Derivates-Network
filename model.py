@@ -8,8 +8,6 @@ class Betsy(tf.keras.Model):
   def __init__(self, input_shape, input_sigmas, input_kernel_size):
     super().__init__()
     
-    
-    ##te quiero puta##
     ###################################################################
     # GAUSSIAN LAYERS
     ###################################################################
@@ -79,6 +77,72 @@ class Betsy(tf.keras.Model):
                                    use_bias=False,
                                    name = 'Gaussian6')
     
+    self.gaussian7 = FTGDConvLayer(filters=64, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, False, False],
+                                   sigma_init= input_sigmas[6],
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian7')
+    
+    self.gaussian8 = FTGDConvLayer(filters=32, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, False, False],
+                                   sigma_init= input_sigmas[7],
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian8')
+        
+    self.gaussian9 = FTGDConvLayer(filters=20, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, False, False],
+                                   sigma_init= input_sigmas[8],
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian9')
+    
+    self.gaussian10 = FTGDConvLayer(filters=16, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, False, False],
+                                   sigma_init= input_sigmas[9],
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian10')
+    
+    self.gaussian11 = FTGDConvLayer(filters=8, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, False, False],
+                                   sigma_init= input_sigmas[10],
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian11')
+    
+    self.gaussian12 = FTGDConvLayer(filters=1, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=2, 
+                                   separated = False,
+                                   trainability=[False, False, False],
+                                   sigma_init= input_sigmas[11],
+                                   random_init=False, 
+                                   use_bias=False,
+                                   name = 'Gaussian12')
+    
     ###################################################################
     # NORMALIZATION LAYERS
     ###################################################################
@@ -88,12 +152,19 @@ class Betsy(tf.keras.Model):
     self.BN_3 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_3')
     self.BN_4 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_4')
     self.BN_5 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_5')
+    self.BN_6 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_6')
+    self.BN_7 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_7')
+    self.BN_8 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_8')
+    self.BN_9 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_9')
+    self.BN_10 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_10')
+    self.BN_11 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_11')
+    self.BN_12 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
     
     
        
-    self.output_layer = tf.keras.layers.Conv2D(1,1, 
-                                               activation='relu',
-                                               input_shape = (input_shape[0], input_shape[1], 32))
+    # self.output_layer = tf.keras.layers.Conv2D(1,1, 
+    #                                            activation='relu',
+    #                                            input_shape = (input_shape[0], input_shape[1], 32))
     
     #
        
@@ -110,11 +181,23 @@ class Betsy(tf.keras.Model):
     x = self.BN_3(x)
     x = self.gaussian4(x)#6
     x = self.BN_4(x)
-    #x = tf.keras.activations.sigmoid(x)#8
     x = self.gaussian5(x) #8
     x = self.BN_5(x)
     x = self.gaussian6(x) #10
-    return self.output_layer(x)#12
+    x = self.BN_6(x)
+    x = self.gaussian7(x) #10
+    x = self.BN_7(x)
+    x = self.gaussian8(x) #10
+    x = self.BN_8(x)
+    x = self.gaussian9(x) #10
+    x = self.BN_9(x)
+    x = self.gaussian10(x) #10
+    x = self.BN_10(x)
+    x = self.gaussian11(x) #10
+    x = self.BN_11(x)
+    x = self.gaussian12(x) #10
+    x = self.BN_12(x)
+    return x
    
 
   def get_loss(self, train_image, test_GT):
@@ -134,6 +217,10 @@ class Betsy(tf.keras.Model):
     return tf.keras.Model(inputs=[y], 
                           outputs=self.call(y))
   
+  
+  
+
+
 class sMAE(tf.keras.metrics.Metric):
 
   def __init__(self, name= 'sMAE', **kwargs):
@@ -235,7 +322,7 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 1))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 4))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 
