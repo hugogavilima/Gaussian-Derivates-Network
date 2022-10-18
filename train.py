@@ -13,11 +13,11 @@ paths_train = json.load(json_train)
 paths_test = json.load(json_test)
 
 #Cargamos la data 
-train_GT = mLoad_GT(paths_train, n=10)
-train_img = mLoad_Img(paths_train, n=10)
+train_GT = mLoad_GT(paths_train)
+train_img = mLoad_Img(paths_train)
 
-test_GT = mLoad_GT(paths_test, n=5)
-test_img = mLoad_Img(paths_test, n=5)
+test_GT = mLoad_GT(paths_test)
+test_img = mLoad_Img(paths_test)
 
 
 #Definimos los sigmas
@@ -41,41 +41,42 @@ model.compile(loss = GAME_loss,
 checkpoint_path = "training/cp-{epoch:04d}.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
 
-batch_size = 10
+batch_size = 5
 
 # Create a callback that saves the model's weights
 cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-                                                 verbose=1)
+                                                 verbose=1,
+                                                 save_freq = 20)
 
-model.fit(train_img, 
+history = model.fit(train_img, 
           train_GT, 
           batch_size = batch_size, 
-          epochs = 50, 
-          validation_data=(test_img, test_GT))
-#         callbacks=[cp_callback])
+          epochs = 40, 
+          validation_data=(test_img, test_GT),
+          callbacks=[cp_callback])
 
 print('Entrenamiento Terminado! \n')
 #latest = tf.train.latest_checkpoint(checkpoint_dir)
 #model.load_weights(latest)
 
 
-model.layers[0].deploy()
-model.layers[1].deploy()
-model.layers[2].deploy()
-model.layers[3].deploy()
-model.layers[4].deploy()
-model.layers[5].deploy()
+# Get the dictionary containing each metric and the loss for each epoch
+history_dict = model.history
+# Save it under the form of a json file
+json.dump(history_dict, open('JSON FILES\history_dict.json', 'w'))
 
-dpy = {'G1 dpy': model.layers[0].deployed,
-       'G2 dpy': model.layers[1].deployed,
-       'G3 dpy': model.layers[2].deployed,
-       'G4 dpy': model.layers[3].deployed,
-       'G5 dpy': model.layers[4].deployed}
-print(dpy)
+for i in range(len(model.layers)):
+    try:
+        model.layers[i].deploy()
+        print('Gaussian Layer: ', i, model.layers[i].deployed, '\n')
+    except:
+        print(i, 'is no a Gaussian Layer')
+        
 
 print('Calculando Prediccion... \n')
-predict = model(test_img)
+predict = model.predict(test_img, batch_size=batch_size)
 print('Done!')
+
 
 print('Creando los ploting... \n')
 count_estimate(test_img, test_GT, predict, model)

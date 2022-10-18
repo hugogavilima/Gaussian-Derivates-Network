@@ -1,20 +1,30 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf 
+import pandas as pd
 
 
 def count_estimate(test_img, test_gt, predict, model):
     N = len(test_gt)
+    resume = pd.DataFrame({'GT':[], 'Pred':[], 'Loss':[]})
     for i in range(N):
         IMG = test_img[i,:,:,0]
         GT = test_gt[i,:,:,0]
         PRED = predict[i,:,:,0]
-        est_loss = model.get_loss(test_img, test_gt)
+        
+        #est_loss = model.get_loss(test_img, test_gt)
         est_count = tf.math.reduce_sum(PRED)
         GT_count = tf.math.reduce_sum(GT)
         
-        est_MAE = model.get_loss(test_img, test_gt)
-        plotting_testing_01(IMG, GT, PRED, GT_count, est_count, est_loss, est_MAE, i)    
+        resume.loc[i, 'GT'] = np.float32(GT_count)
+        resume.loc[i, 'Pred'] = np.float32(est_count)
+        #resume.loc[i, 'Loss'] = est_loss
+        
+        
+        #est_MAE = model.get_loss(test_img, test_gt)
+        plotting_testing_01(IMG, GT, PRED, GT_count, est_count, 0, 0, i) 
+    
+    resume.to_excel('resume.xlsx')  
                
         
                 

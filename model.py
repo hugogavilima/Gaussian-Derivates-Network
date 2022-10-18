@@ -7,6 +7,10 @@ class Betsy(tf.keras.Model):
 
   def __init__(self, input_shape, input_sigmas, input_kernel_size):
     super().__init__()
+    
+    ###################################################################
+    # GAUSSIAN LAYERS
+    ###################################################################
     self.gaussian1 = FTGDConvLayer(filters=12, 
                                    kernel_size = input_kernel_size,   
                                    num_basis= 1, 
@@ -72,10 +76,24 @@ class Betsy(tf.keras.Model):
                                    random_init=False, 
                                    use_bias=False,
                                    name = 'Gaussian6')
+    
+    ###################################################################
+    # NORMALIZATION LAYERS
+    ###################################################################
+    
+    self.BN_1 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_1')
+    self.BN_2 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_2')
+    self.BN_3 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_3')
+    self.BN_4 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_4')
+    self.BN_5 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_5')
+    
+    
        
     self.output_layer = tf.keras.layers.Conv2D(1,1, 
                                                activation='relu',
                                                input_shape = (input_shape[0], input_shape[1], 32))
+    
+    #
        
     self.sMAE = sMAE()
     self.RMSE = RMSE()
@@ -83,13 +101,18 @@ class Betsy(tf.keras.Model):
 
   def call(self, input):
     x = self.gaussian1(input)
-    x = self.gaussian2(x)
-    x = self.gaussian3(x)
-    x = self.gaussian4(x)
-    #x = tf.keras.activations.sigmoid(x)
-    x = self.gaussian5(x) 
-    x = self.gaussian6(x) 
-    return self.output_layer(x)
+    x = self.BN_1(x)
+    x = self.gaussian2(x)#2
+    x = self.BN_2(x)
+    x = self.gaussian3(x) #4
+    x = self.BN_3(x)
+    x = self.gaussian4(x)#6
+    x = self.BN_4(x)
+    #x = tf.keras.activations.sigmoid(x)#8
+    x = self.gaussian5(x) #8
+    x = self.BN_5(x)
+    x = self.gaussian6(x) #10
+    return self.output_layer(x)#12
    
 
   def get_loss(self, train_image, test_GT):
