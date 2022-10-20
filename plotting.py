@@ -26,7 +26,26 @@ def count_estimate(test_img, test_gt, predict, model):
     
     resume.to_excel('resume.xlsx')  
                
+
+def count_estimate_GC(test_img, test_gt, predict, name):
+    N = len(test_gt)
+    resume = pd.DataFrame({'GT':[], 'Pred':[]})
+    
+    for i in range(N):
+        IMG = test_img[i,:,:,0]
+        GT = test_gt[i,:,:,0]
+        PRED = predict[i,:,:,0]
         
+        est_count = tf.math.reduce_sum(PRED)
+        GT_count = tf.math.reduce_sum(GT)
+        
+        resume.loc[i, 'GT'] = GT_count
+        resume.loc[i, 'Pred'] = est_count
+    
+    resume.to_excel('/content/drive/MyDrive/plotting/' + name + '.xlsx')     
+    
+    
+      
                 
 def plotting_testing_01(test_img, test_GT, predict, GT_count, est_count, est_loss, est_MAE, i):
     font = {'color':  'black','weight': 'normal','size': 16}

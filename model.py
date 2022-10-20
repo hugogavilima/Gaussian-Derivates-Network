@@ -147,18 +147,18 @@ class Betsy(tf.keras.Model):
     # NORMALIZATION LAYERS
     ###################################################################
     
-    self.BN_1 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_1')
-    self.BN_2 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_2')
-    self.BN_3 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_3')
-    self.BN_4 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_4')
-    self.BN_5 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_5')
-    self.BN_6 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_6')
-    self.BN_7 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_7')
-    self.BN_8 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_8')
-    self.BN_9 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_9')
-    self.BN_10 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_10')
-    self.BN_11 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_11')
-    self.BN_12 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
+    #self.BN_1 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_1')
+    #self.BN_2 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_2')
+    #self.BN_3 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_3')
+    #self.BN_4 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_4')
+    #self.BN_5 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_5')
+    #self.BN_6 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_6')
+    #self.BN_7 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_7')
+    #self.BN_8 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_8')
+    #self.BN_9 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_9')
+    #self.BN_10 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_10')
+    #self.BN_11 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_11')
+    #self.BN_12 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
     
     
        
@@ -168,35 +168,31 @@ class Betsy(tf.keras.Model):
     
     #
        
-    self.sMAE = sMAE()
-    self.RMSE = RMSE()
-
-
   def call(self, input):
     x = self.gaussian1(input)
-    x = self.BN_1(x)
+    #x = self.BN_1(x)
     x = self.gaussian2(x)#2
-    x = self.BN_2(x)
+    #x = self.BN_2(x)
     x = self.gaussian3(x) #4
-    x = self.BN_3(x)
+    #x = self.BN_3(x)
     x = self.gaussian4(x)#6
-    x = self.BN_4(x)
+    #x = self.BN_4(x)
     x = self.gaussian5(x) #8
-    x = self.BN_5(x)
+    #x = self.BN_5(x)
     x = self.gaussian6(x) #10
-    x = self.BN_6(x)
+    #x = self.BN_6(x)
     x = self.gaussian7(x) #10
-    x = self.BN_7(x)
+    #x = self.BN_7(x)
     x = self.gaussian8(x) #10
-    x = self.BN_8(x)
+    #x = self.BN_8(x)
     x = self.gaussian9(x) #10
-    x = self.BN_9(x)
+    #x = self.BN_9(x)
     x = self.gaussian10(x) #10
-    x = self.BN_10(x)
+    #x = self.BN_10(x)
     x = self.gaussian11(x) #10
-    x = self.BN_11(x)
+    #x = self.BN_11(x)
     x = self.gaussian12(x) #10
-    x = self.BN_12(x)
+    #x = self.BN_12(x)
     return x
    
 
@@ -204,77 +200,52 @@ class Betsy(tf.keras.Model):
     train_pred_GT = self.call(train_image)
     return GAME_loss(train_pred_GT, test_GT)
   
+  
   def get_sMAE(self, train_image, test_GT):
-    
-    train_pred_GT = self.call(train_image)
-    self.sMAE.reset_state()
-    self.sMAE.update_state(test_GT, train_pred_GT)
-    
-    return self.sMAE.result()
+    train_pred_GT = self.call(train_image)    
+    return sMAE(test_GT, train_pred_GT)
+  
+  
+  def get_RMSE(self, train_image, test_GT):
+    train_pred_GT = self.call(train_image)    
+    return RMSE(test_GT, train_pred_GT)
+
 
   def build_graph(self, input_shape):
     y = tf.keras.layers.Input(shape = input_shape)
     return tf.keras.Model(inputs=[y], 
                           outputs=self.call(y))
-  
-  
-  
 
 
-class sMAE(tf.keras.metrics.Metric):
-
-  def __init__(self, name= 'sMAE', **kwargs):
-    super(sMAE, self).__init__(name=name, **kwargs)
-    self.true_positives = self.add_weight(name='tp', initializer='zeros')
-
-  def update_state(self, y_true, y_pred, sample_weight=None):
+def sMAE(y_true, y_pred):
+  res2 = tf.constant(0, dtype=np.float32)
     
-    res2 = tf.constant(0, dtype=np.float32)
-    for i in range(len(y_pred)):
-      res2 = res2 + (GAME_recursive(y_pred[i], y_true[i], 0, 0))
+  for i in range(len(y_pred)):
+    bb = tf.math.abs(tf.math.reduce_sum(y_true[i]) - tf.math.reduce_sum(y_pred[i]))
+    res2 = tf.math.add(res2, bb) 
       
-    values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
-    values = tf.cast(values, self.dtype)
+  values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
     
-    if sample_weight is not None:
-      sample_weight = tf.cast(sample_weight, self.dtype)
-      sample_weight = tf.broadcast_to(sample_weight, values.shape)
-      #values = tf.multiply(values, sample_weight)
-      
-    self.true_positives.assign_add(values)
-
-  def result(self):
-    return self.true_positives
-
-class RMSE(tf.keras.metrics.Metric):
-
-  def __init__(self, name= 'RMSE', **kwargs):
-    super(RMSE, self).__init__(name=name, **kwargs)
-    self.true_positives = self.add_weight(name='tp', initializer='zeros')
-    
-  def update_state(self, y_true, y_pred, sample_weight=None):
-    res2 = tf.constant(0, dtype=np.float32)
-    for i in range(len(y_pred)):
-      bb = GAME_recursive(y_pred[i], y_true[i], 0, 0)
-      res2 = res2 + tf.math.square(bb)
-      
-    values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
-    values = tf.math.sqrt(values)
-    values = tf.cast(values, self.dtype)
-    
-    if sample_weight is not None:
-      sample_weight = tf.cast(sample_weight, self.dtype)
-      sample_weight = tf.broadcast_to(sample_weight, values.shape)
-      #values = tf.multiply(values, sample_weight)
-      
-    self.true_positives.assign_add(values)
-
-  def result(self):
-    return self.true_positives
-
-
-
+  return values
  
+ 
+ 
+def RMSE(y_true, y_pred):
+  res2 = tf.constant(0, dtype=np.float32)
+    
+  for i in range(len(y_pred)):
+    bb = tf.math.abs(tf.math.reduce_sum(y_true[i]) - tf.math.reduce_sum(y_pred[i]))
+    res2 = tf.math.add(res2, tf.math.square(bb)) 
+      
+  values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
+  values = tf.math.sqrt(values)
+    
+  return values 
+  
+  
+
+
+
 def adjust_dim(array):
     if array.shape[0]%2 != 0:
         array = tf.pad(array, tf.constant([[0, 1], [0, 0], [0, 0]]), "CONSTANT")
@@ -322,7 +293,7 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 4))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 5))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 

@@ -13,11 +13,11 @@ mLoad_dataset:
     de todos estos tensores.  
 
 """
-def mLoad_GT(paths):
+def mLoad_GT(paths, n):
     
     #Cargamos el array usando su ubicacion. Sabemos que esta guardados en un h5file
     GT_lts = []
-    for path in paths:
+    for path in paths[0:n]:
         f = h5py.File(path, 'r')
         GT_lts.append(np.asarray([f['density']]))
         f.close
@@ -41,11 +41,11 @@ def mLoad_GT(paths):
     tt = nn.layers.Concatenate(axis=0)(GT_lts)  
     return tt
     
-def mLoad_Img(paths):
+def mLoad_Img(paths, n):
     
     #Cargamos el array usando su ubicacion. Sabemos que esta guardados en un h5file
     GT_lts = []
-    for path in paths:
+    for path in paths[0:n]:
         img_path = str(path).replace('.h5','.jpg').replace('ground_truth_density','images').replace('GT_IMG_', 'IMG_')
         img = io.imread(img_path, as_gray=True)
         GT_lts.append(np.asarray([img.astype(np.float64)]))
