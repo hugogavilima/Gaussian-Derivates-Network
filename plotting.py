@@ -25,26 +25,7 @@ def count_estimate(test_img, test_gt, predict, model):
         plotting_testing_01(IMG, GT, PRED, GT_count, est_count, 0, 0, i) 
     
     resume.to_excel('resume.xlsx')  
-               
-
-def count_estimate_GC(test_img, test_gt, predict, name):
-    N = len(test_gt)
-    resume = pd.DataFrame({'GT':[], 'Pred':[]})
-    
-    for i in range(N):
-        IMG = test_img[i,:,:,0]
-        GT = test_gt[i,:,:,0]
-        PRED = predict[i,:,:,0]
-        
-        est_count = tf.math.reduce_sum(PRED)
-        GT_count = tf.math.reduce_sum(GT)
-        
-        resume.loc[i, 'GT'] = GT_count
-        resume.loc[i, 'Pred'] = est_count
-    
-    resume.to_excel('/content/drive/MyDrive/plotting/' + name + '.xlsx')     
-    
-    
+                   
       
                 
 def plotting_testing_01(test_img, test_GT, predict, GT_count, est_count, est_loss, est_MAE, i):
@@ -76,3 +57,41 @@ def plotting_testing_01(test_img, test_GT, predict, GT_count, est_count, est_los
     plt.close(fig)
 
 
+
+def deploy_layers(model):
+  layers = model.layers
+  for ly in layers:
+    try:
+        ly.deploy()
+        print(ly, ' deploy: ', model.layers[i].deployed)
+    except:
+        print(ly, 'is no a Gaussian Layer')
+        
+
+def train_layers(model):
+  layers = model.layers
+  for ly in layers:
+    try:
+        ly.to_train()
+        print(ly, ' deploy: ', model.layers[i].deployed)
+    except:
+        print(ly, 'is no a Gaussian Layer')
+        
+
+
+def count_estimate_GC(test_img, test_gt, predict, name):
+    N = len(test_gt)
+    resume = pd.DataFrame({'GT':[], 'Pred':[]})
+    
+    for i in range(N):
+        IMG = test_img[i,:,:,0]
+        GT = test_gt[i,:,:,0]
+        PRED = predict[i,:,:,0]
+        
+        est_count = tf.math.reduce_sum(PRED)
+        GT_count = tf.math.reduce_sum(GT)
+        
+        resume.loc[i, 'GT'] = np.float32(GT_count)
+        resume.loc[i, 'Pred'] = np.float32(est_count)
+    
+    resume.to_excel('/content/drive/MyDrive/plotting/' + name + '.xlsx')
