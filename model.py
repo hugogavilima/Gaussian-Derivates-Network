@@ -272,7 +272,7 @@ def four_split_tf(mtf):
 
 def GAME_recursive(density, gt, currentLevel, targetLevel):
     if currentLevel == targetLevel:
-        game = tf.math.abs(tf.math.reduce_sum(density) - tf.math.reduce_sum(gt))
+        game = tf.math.abs(-tf.math.reduce_sum(density) + tf.math.reduce_sum(gt))
         return game
     
     else:
