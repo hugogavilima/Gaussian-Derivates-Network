@@ -13,7 +13,7 @@ class Betsy(tf.keras.Model):
     ###################################################################
     self.gaussian1 = FTGDConvLayer(filters=12, 
                                    kernel_size = input_kernel_size,   
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -24,7 +24,7 @@ class Betsy(tf.keras.Model):
 
     self.gaussian2 = FTGDConvLayer(filters=14, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 8, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -35,7 +35,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian3 = FTGDConvLayer(filters=16, 
                                    kernel_size = input_kernel_size,  
-                                   num_basis= 1, 
+                                   num_basis= 2, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -46,7 +46,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian4 = FTGDConvLayer(filters=20, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 2, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -57,7 +57,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian5 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -68,7 +68,7 @@ class Betsy(tf.keras.Model):
 
     self.gaussian6 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 8, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -79,7 +79,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian7 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 2, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -147,18 +147,19 @@ class Betsy(tf.keras.Model):
     # NORMALIZATION LAYERS
     ###################################################################
     
-    #self.BN_1 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_1')
-    #self.BN_2 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_2')
-    #self.BN_3 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_3')
-    #self.BN_4 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_4')
-    #self.BN_5 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_5')
-    #self.BN_6 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_6')
-    #self.BN_7 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_7')
-    #self.BN_8 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_8')
-    #self.BN_9 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_9')
-    #self.BN_10 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_10')
-    #self.BN_11 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_11')
-    #self.BN_12 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
+    self.BN_1 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_1')
+    self.BN_2 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_2')
+    self.BN_3 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_3')
+    self.BN_4 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_4')
+    self.BN_5 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_5')
+    self.BN_6 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_6')
+    self.BN_7 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_7')
+    self.BN_8 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_8')
+    self.BN_9 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_9')
+    self.BN_10 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_10')
+    self.BN_11 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_11')
+    self.BN_12 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
+    
     
     
        
@@ -170,29 +171,41 @@ class Betsy(tf.keras.Model):
        
   def call(self, input):
     x = self.gaussian1(input)
-    #x = self.BN_1(x)
-    x = self.gaussian2(x)#2
-    #x = self.BN_2(x)
-    x = self.gaussian3(x) #4
-    #x = self.BN_3(x)
-    x = self.gaussian4(x)#6
-    #x = self.BN_4(x)
-    x = self.gaussian5(x) #8
-    #x = self.BN_5(x)
-    x = self.gaussian6(x) #10
-    #x = self.BN_6(x)
-    x = self.gaussian7(x) #10
-    #x = self.BN_7(x)
-    x = self.gaussian8(x) #10
-    #x = self.BN_8(x)
-    x = self.gaussian9(x) #10
-    #x = self.BN_9(x)
-    x = self.gaussian10(x) #10
-    #x = self.BN_10(x)
-    x = self.gaussian11(x) #10
-    #x = self.BN_11(x)
-    x = self.gaussian12(x) #10
+    x = self.BN_1(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian2(x)
+    x = self.BN_2(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian3(x) 
+    x = self.BN_3(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian4(x)
+    x = self.BN_4(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian5(x) 
+    x = self.BN_5(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian6(x) 
+    x = self.BN_6(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian7(x) 
+    x = self.BN_7(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian8(x) 
+    x = self.BN_8(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian9(x) 
+    x = self.BN_9(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian10(x)
+    x = self.BN_10(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian11(x) 
+    x = self.BN_11(x)
+    x = tf.keras.activations.relu(x)
+    x = self.gaussian12(x)
     #x = self.BN_12(x)
+    #x = tf.keras.activations.relu(x)
     return x
    
 
