@@ -35,7 +35,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian3 = FTGDConvLayer(filters=16, 
                                    kernel_size = input_kernel_size,  
-                                   num_basis= 2, 
+                                   num_basis= 8, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -57,7 +57,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian5 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 4, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -68,7 +68,7 @@ class Betsy(tf.keras.Model):
 
     self.gaussian6 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 8, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -79,7 +79,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian7 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 2, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -112,7 +112,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian10 = FTGDConvLayer(filters=16, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 4, 
+                                   num_basis= 2, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
