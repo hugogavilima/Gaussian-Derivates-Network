@@ -5,6 +5,7 @@ from plotting import *
 import tensorflow as tf 
 import os
 from numpy import sqrt as sqrt
+import h5py
 
 #Importamos los ground truth del conjunto de entrenamiento y test. 
 json_train = open('JSON FILES\DTS_SG_part_A.json')

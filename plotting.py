@@ -2,36 +2,51 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf 
 import pandas as pd
+import os 
+from model import *
+from progressbar import progressbar 
 
 
-def count_estimate(test_img, test_gt, predict, model):
+def count_estimate(test_img, test_gt, predict, name, type):
+    
+    root = r'C:\Users\Usuario\Documents\results'
+    path = os.path.join(root, name)
+    
+    try:
+        os.mkdir(path)
+    except:
+        None
+    
     N = len(test_gt)
-    resume = pd.DataFrame({'GT':[], 'Pred':[], 'Loss':[]})
-    for i in range(N):
+    resume = pd.DataFrame({'GT':[], 'Pred':[], 'Loss':[], 'MAE': []})
+    progress = progressbar.ProgressBar()
+    for i in progress(range(N)):
         IMG = test_img[i,:,:,0]
         GT = test_gt[i,:,:,0]
         PRED = predict[i,:,:,0]
         
-        #est_loss = model.get_loss(test_img, test_gt)
+        
         est_count = tf.math.reduce_sum(PRED)
         GT_count = tf.math.reduce_sum(GT)
+        est_loss = GAME_recursive(np.expand_dims(PRED, -1), np.expand_dims(GT, -1), 0, 6)
+        est_MAE =  tf.math.divide(tf.math.abs(tf.math.reduce_sum(GT) - tf.math.reduce_sum(PRED)), tf.cast(N, tf.float32)) 
         
         resume.loc[i, 'GT'] = np.float32(GT_count)
         resume.loc[i, 'Pred'] = np.float32(est_count)
-        #resume.loc[i, 'Loss'] = est_loss
+        resume.loc[i, 'Loss'] = np.float32(est_loss)
+        resume.loc[i, 'MAE'] = np.float32(est_MAE)       
         
         
-        #est_MAE = model.get_loss(test_img, test_gt)
-        plotting_testing_01(IMG, GT, PRED, GT_count, est_count, 0, 0, i) 
+        plotting_testing(IMG, GT, PRED, GT_count, est_count, est_loss, est_MAE, i, path, type) 
     
-    resume.to_excel('resume.xlsx')  
+    resume.to_excel(os.path.join(path, name + '.xlsx'))  
                    
       
                 
-def plotting_testing_01(test_img, test_GT, predict, GT_count, est_count, est_loss, est_MAE, i):
+def plotting_testing(test_img, test_GT, predict, GT_count, est_count, est_loss, est_MAE, i, path, type):
     font = {'color':  'black','weight': 'normal','size': 16}
 
-    fig = plt.figure(figsize=(16, 6), constrained_layout=True)
+    fig = plt.figure(figsize=(16, 8), constrained_layout=True)
     ax1 = fig.add_subplot(1,3,1)
     ax1.imshow(test_img, cmap = 'gray')
     ax1.axis('off')
@@ -51,9 +66,13 @@ def plotting_testing_01(test_img, test_GT, predict, GT_count, est_count, est_los
     ax3.set_title('Densidad Estimada', fontdict=font)
     ax3.imshow(predict, interpolation='gaussian')
     ax3.axis('off')
-
-
-    fig.savefig('plots/test_' + str(i) + '.png');
+    
+    fig_path = os.path.join(path, type)
+    try:
+        os.mkdir(fig_path)
+    except:
+        None
+    fig.savefig(os.path.join(fig_path, str(i) + '.png'));
     plt.close(fig)
 
 
@@ -63,7 +82,7 @@ def deploy_layers(model):
   for ly in layers:
     try:
         ly.deploy()
-        print(ly, ' deploy: ', model.layers[i].deployed)
+        print(ly, ' deploy: ', ly.deployed)
     except:
         print(ly, 'is no a Gaussian Layer')
         
@@ -73,25 +92,7 @@ def train_layers(model):
   for ly in layers:
     try:
         ly.to_train()
-        print(ly, ' deploy: ', model.layers[i].deployed)
+        print(ly, ' deploy: ', ly.deployed)
     except:
         print(ly, 'is no a Gaussian Layer')
         
-
-
-def count_estimate_GC(test_img, test_gt, predict, name):
-    N = len(test_gt)
-    resume = pd.DataFrame({'GT':[], 'Pred':[]})
-    
-    for i in range(N):
-        IMG = test_img[i,:,:,0]
-        GT = test_gt[i,:,:,0]
-        PRED = predict[i,:,:,0]
-        
-        est_count = tf.math.reduce_sum(PRED)
-        GT_count = tf.math.reduce_sum(GT)
-        
-        resume.loc[i, 'GT'] = np.float32(GT_count)
-        resume.loc[i, 'Pred'] = np.float32(est_count)
-    
-    resume.to_excel('/content/drive/MyDrive/plotting/' + name + '.xlsx')

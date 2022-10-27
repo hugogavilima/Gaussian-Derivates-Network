@@ -4,14 +4,30 @@ import numpy as np
 import h5py
 from skimage import io
 
+
 """
-mLoad_dataset:
+mLoad_Pred:
+    Funcion que nos ayuda a crear el tensor de desnidades estimadas del archivo resultante
+    luego del entrenamiento.   
+"""
+def mLoad_Pred(path):
+    
+    #Cargamos el array usando su ubicacion. Sabemos que esta guardados en un h5file
+    f = h5py.File(path, 'r')
+    predict_train = tensorflow.constant(np.asarray(f['train']))
+    predict_test = tensorflow.constant(np.asarray(f['test']))
+    f.close
+      
+    return predict_train, predict_test
+
+
+"""
+mLoad_GT:
     Funcion que nos ayuda a crear el tensor de imagenes, de canal 1, dada una lista de 
     paths del GT de imagenes. Aqui se reestructura cada array, tanto al insertar un pad
     constante en imagenes con menor shape, y con una dimension adicional que se usa como
     el cana de imagen. El objetivo final es no tener problemas durante la cocatencacion
     de todos estos tensores.  
-
 """
 def mLoad_GT(paths):
     
@@ -40,7 +56,16 @@ def mLoad_GT(paths):
     
     tt = nn.layers.Concatenate(axis=0)(GT_lts)  
     return tt
-    
+
+
+"""
+mLoad_GT:
+    Funcion que nos ayuda a crear el tensor de imagenes, de canal 1, dada una lista de 
+    paths de imagenes. Aqui se reestructura cada array, tanto al insertar un pad
+    constante en imagenes con menor shape, y con una dimension adicional que se usa como
+    el cana de imagen. El objetivo final es no tener problemas durante la cocatencacion
+    de todos estos tensores.  
+""" 
 def mLoad_Img(paths):
     
     #Cargamos el array usando su ubicacion. Sabemos que esta guardados en un h5file
@@ -92,7 +117,6 @@ pad_Tensor:
     de todas las imagenes. El ajuste se realiza usando un pad constante y que centra 
     la imagen. El objetivo es evitar problemas al concatenar todas las imagenes en 
     un solo tensor.
-
 """
 def pad_Tensor(max_shp, mshape):
     mx, my = max_shp

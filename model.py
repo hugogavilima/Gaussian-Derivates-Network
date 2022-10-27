@@ -112,7 +112,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian10 = FTGDConvLayer(filters=16, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -123,7 +123,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian11 = FTGDConvLayer(filters=8, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -134,7 +134,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian12 = FTGDConvLayer(filters=1, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 2, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -160,9 +160,9 @@ class Betsy(tf.keras.Model):
     self.BN_11 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_11')
     self.BN_12 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
     
-    
-    
-       
+    ###################################################################
+    # OUTPUT LAYERS
+    ###################################################################
     # self.output_layer = tf.keras.layers.Conv2D(1,1, 
     #                                            activation='relu',
     #                                            input_shape = (input_shape[0], input_shape[1], 32))
@@ -171,64 +171,55 @@ class Betsy(tf.keras.Model):
        
   def call(self, input):
     x = self.gaussian1(input)
-    x = self.BN_1(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_1(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian2(x)
-    x = self.BN_2(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_2(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian3(x) 
-    x = self.BN_3(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_3(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian4(x)
-    x = self.BN_4(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_4(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian5(x) 
-    x = self.BN_5(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_5(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian6(x) 
-    x = self.BN_6(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_6(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian7(x) 
-    x = self.BN_7(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_7(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian8(x) 
-    x = self.BN_8(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_8(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian9(x) 
-    x = self.BN_9(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_9(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian10(x)
-    x = self.BN_10(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_10(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian11(x) 
-    x = self.BN_11(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.BN_11(x)
+    #x = tf.keras.activations.relu(x)
     x = self.gaussian12(x)
     #x = self.BN_12(x)
     #x = tf.keras.activations.relu(x)
     return x
    
 
-  def get_loss(self, train_image, test_GT):
-    train_pred_GT = self.call(train_image)
-    return GAME_loss(train_pred_GT, test_GT)
-  
-  
-  def get_sMAE(self, train_image, test_GT):
-    train_pred_GT = self.call(train_image)    
-    return sMAE(test_GT, train_pred_GT)
-  
-  
-  def get_RMSE(self, train_image, test_GT):
-    train_pred_GT = self.call(train_image)    
-    return RMSE(test_GT, train_pred_GT)
-
-
   def build_graph(self, input_shape):
     y = tf.keras.layers.Input(shape = input_shape)
     return tf.keras.Model(inputs=[y], 
                           outputs=self.call(y))
 
+"""
+##########################################################################################
+METRCIAS:
+    En este apartado, definimos las metricas usadas durante el entrenamiento
+########################################################################################## 
+"""
 
 def sMAE(y_true, y_pred):
   res2 = tf.constant(0, dtype=np.float32)
@@ -240,7 +231,6 @@ def sMAE(y_true, y_pred):
   values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
     
   return values
- 
  
  
 def RMSE(y_true, y_pred):
@@ -256,8 +246,12 @@ def RMSE(y_true, y_pred):
   return values 
   
   
-
-
+"""
+##########################################################################################
+FUNCION DE PERDIDA:
+    En este apartado, definimos lafuncion de perdida, como sus funciones auxiliares. 
+########################################################################################## 
+"""
 
 def adjust_dim(array):
     if array.shape[0]%2 != 0:
@@ -265,6 +259,7 @@ def adjust_dim(array):
     if array.shape[1]%2 != 0:
         array = tf.pad(array, tf.constant([[0, 0], [0, 1], [0, 0]]), "CONSTANT")
     return array
+
 
 
 def four_split_tf(mtf):
@@ -306,7 +301,7 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 5))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 6))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 
