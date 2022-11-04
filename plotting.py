@@ -29,7 +29,7 @@ def count_estimate(test_img, test_gt, predict, name, type):
         est_count = tf.math.reduce_sum(PRED)
         GT_count = tf.math.reduce_sum(GT)
         est_loss = GAME_recursive(np.expand_dims(PRED, -1), np.expand_dims(GT, -1), 0, 6)
-        est_MAE =  tf.math.divide(tf.math.abs(tf.math.reduce_sum(GT) - tf.math.reduce_sum(PRED)), tf.cast(N, tf.float32)) 
+        est_MAE =  tf.math.abs(tf.math.reduce_sum(GT) - tf.math.reduce_sum(PRED))
         
         resume.loc[i, 'GT'] = np.float32(GT_count)
         resume.loc[i, 'Pred'] = np.float32(est_count)

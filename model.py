@@ -13,7 +13,7 @@ class Betsy(tf.keras.Model):
     ###################################################################
     self.gaussian1 = FTGDConvLayer(filters=12, 
                                    kernel_size = input_kernel_size,   
-                                   num_basis= 4, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -24,7 +24,7 @@ class Betsy(tf.keras.Model):
 
     self.gaussian2 = FTGDConvLayer(filters=14, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 8, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -35,7 +35,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian3 = FTGDConvLayer(filters=16, 
                                    kernel_size = input_kernel_size,  
-                                   num_basis= 8, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -46,7 +46,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian4 = FTGDConvLayer(filters=20, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 2, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -112,7 +112,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian10 = FTGDConvLayer(filters=16, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 2, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -123,7 +123,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian11 = FTGDConvLayer(filters=8, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 4, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -134,7 +134,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian12 = FTGDConvLayer(filters=1, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 2, 
+                                   num_basis= 1, 
                                    order=2, 
                                    separated = False,
                                    trainability=[False, False, False],
@@ -163,9 +163,9 @@ class Betsy(tf.keras.Model):
     ###################################################################
     # OUTPUT LAYERS
     ###################################################################
-    # self.output_layer = tf.keras.layers.Conv2D(1,1, 
-    #                                            activation='relu',
-    #                                            input_shape = (input_shape[0], input_shape[1], 32))
+    self.output_layer = tf.keras.layers.Conv2D(1,1, 
+                                               activation='relu',
+                                               input_shape = (input_shape[0], input_shape[1], 32))
     
     #
        
@@ -206,7 +206,7 @@ class Betsy(tf.keras.Model):
     x = self.gaussian12(x)
     #x = self.BN_12(x)
     #x = tf.keras.activations.relu(x)
-    return x
+    return self.output_layer(x)
    
 
   def build_graph(self, input_shape):
