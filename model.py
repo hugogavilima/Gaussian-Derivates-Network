@@ -206,7 +206,7 @@ class Betsy(tf.keras.Model):
     x = self.gaussian12(x)
     #x = self.BN_12(x)
     #x = tf.keras.activations.relu(x)
-    return self.output_layer(x)
+    return x
    
 
   def build_graph(self, input_shape):
@@ -216,7 +216,7 @@ class Betsy(tf.keras.Model):
 
 """
 ##########################################################################################
-METRCIAS:
+METRICAS:
     En este apartado, definimos las metricas usadas durante el entrenamiento
 ########################################################################################## 
 """
@@ -301,7 +301,7 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 5))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 7))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 
