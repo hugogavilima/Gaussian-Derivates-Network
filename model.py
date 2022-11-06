@@ -266,16 +266,16 @@ def four_split_tf(mtf):
     shape = mtf.shape
     x, y = shape[0], shape[1]
     
-    x2, y2 = x//2, y//2, 
+    x2, y2 = x//2, y//2
     
-    mtf4 = tf.constant(0, shape = [4, x2, y2, 1], dtype= tf.float32)
+    #mtf4 = tf.constant(0, shape = [4, x2, y2, 1], dtype= tf.float32)
     sumi = tf.concat([tf.expand_dims(mtf[0:x2, 0:y2, :], axis=0),
                       tf.expand_dims(mtf[0:x2, y2:, :], axis=0),
                       tf.expand_dims(mtf[x2:, 0:y2, :], axis=0),
                       tf.expand_dims(mtf[x2:, y2:, :], axis=0)], 0)
-    mtf4 = mtf4 + sumi
+    #mtf4 = mtf4 + sumi
     
-    return mtf4
+    return sumi
 
 
 def GAME_recursive(density, gt, currentLevel, targetLevel):
@@ -301,7 +301,7 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 7))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 5))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 
