@@ -161,13 +161,12 @@ class Betsy(tf.keras.Model):
     self.BN_12 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
     
     ###################################################################
-    # OUTPUT LAYERS
+    # CHANNEL POOLING LAYER
     ###################################################################
-    self.output_layer = tf.keras.layers.Conv2D(1,1, 
-                                               activation='relu',
-                                               input_shape = (input_shape[0], input_shape[1], 32))
+    self.pool_1 = Depth_MaxPool(3)
+    self.pool_2 = Depth_MaxPool(3)
     
-    #
+    
        
   def call(self, input):
     x = self.gaussian1(input)
@@ -188,6 +187,7 @@ class Betsy(tf.keras.Model):
     x = self.gaussian6(x) 
     x = self.BN_6(x)
     x = tf.keras.activations.relu(x)
+    x = self.pool_1(x)
     x = self.gaussian7(x) 
     x = self.BN_7(x)
     x = tf.keras.activations.relu(x)
@@ -206,6 +206,7 @@ class Betsy(tf.keras.Model):
     x = self.gaussian12(x)
     x = self.BN_12(x)
     x = tf.keras.activations.relu(x)
+    x = self.pool_2(x)
     return x
    
 
@@ -213,6 +214,23 @@ class Betsy(tf.keras.Model):
     y = tf.keras.layers.Input(shape = input_shape)
     return tf.keras.Model(inputs=[y], 
                           outputs=self.call(y))
+
+"""
+##########################################################################################
+LAYERS:
+    En este apartado, definimos el pool layer utilizado en el modelo
+########################################################################################## 
+"""
+
+class Depth_MaxPool(tf.keras.layers.Layer):
+    def __init__(self, pool_dim, **kwargs):
+        super().__init__(**kwargs)
+        self.pool_dim = pool_dim
+    def call(self, inputs):
+        return tf.expand_dims(tf.math.reduce_max(inputs, 
+                                                 axis=self.pool_dim, 
+                                                 keepdims=False, name=None), -1, name=None)
+
 
 """
 ##########################################################################################
@@ -301,7 +319,7 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 5))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 4))
   return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
 
 
