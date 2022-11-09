@@ -26,7 +26,7 @@ def gaussian_filter_density(gts):
     
     leafsize = 2048
     gts_points =  np.transpose(gts.nonzero())
-    tree = KDTree(gts_points, leafsize= leafsize)
+    #tree = KDTree(gts_points, leafsize= leafsize)
 
     result = np.array([], dtype = np.double)
     
@@ -37,12 +37,13 @@ def gaussian_filter_density(gts):
         except:
             print(pt)
 
-        distances, locations = tree.query(pt, k=5)
+        #distances, locations = tree.query(pt, k=5)
         if gt_count > 1:
-           sigma = (distances[1] + distances[2] + distances[3])*0.1
-           #sigma = 1
+           #sigma = (distances[1] + distances[2] + distances[3])*0.1
+           sigma = 15
         else:
-           sigma = np.average(np.array(gts.shape))/2./2. #case: 1 point
+           #sigma = np.average(np.array(gts.shape))/2./2. #case: 1 point
+           sigma = 15
 
         density += gaussian_filter(pt2d, sigma, mode='constant')
         np.append(result, sigma)
