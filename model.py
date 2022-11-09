@@ -316,11 +316,12 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
         
         return res
 
+  
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
     res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 4))
-  return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
+  return tf.math.divide(res2, tf.cast(2*len(gts), tf.float32))
 
 
 
