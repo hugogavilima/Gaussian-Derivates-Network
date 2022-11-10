@@ -11,7 +11,7 @@ class Betsy(tf.keras.Model):
     ###################################################################
     # GAUSSIAN LAYERS
     ###################################################################
-    self.gaussian1 = FTGDConvLayer(filters=64, 
+    self.gaussian1 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size,   
                                    num_basis= 1, 
                                    order=2, 
@@ -22,7 +22,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian1')
 
-    self.gaussian2 = FTGDConvLayer(filters=64, 
+    self.gaussian2 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
@@ -55,7 +55,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian4')
     
-    self.gaussian5 = FTGDConvLayer(filters=128, 
+    self.gaussian5 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
@@ -66,7 +66,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian5')
 
-    self.gaussian6 = FTGDConvLayer(filters=128, 
+    self.gaussian6 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
@@ -99,7 +99,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian8')
         
-    self.gaussian9 = FTGDConvLayer(filters=64, 
+    self.gaussian9 = FTGDConvLayer(filters=256, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
@@ -110,7 +110,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian9')
     
-    self.gaussian10 = FTGDConvLayer(filters=64, 
+    self.gaussian10 = FTGDConvLayer(filters=256, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
@@ -121,7 +121,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian10')
     
-    self.gaussian11 = FTGDConvLayer(filters=64, 
+    self.gaussian11 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
@@ -132,7 +132,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian11')
     
-    self.gaussian12 = FTGDConvLayer(filters=64, 
+    self.gaussian12 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
@@ -165,7 +165,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian12')
     
-    self.gaussian15 = FTGDConvLayer(filters=64, 
+    self.gaussian15 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
@@ -176,7 +176,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian12')
     
-    self.gaussian16 = FTGDConvLayer(filters=64, 
+    self.gaussian16 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=2, 
