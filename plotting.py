@@ -24,11 +24,11 @@ def count_estimate(test_img, test_gt, predict, name, type):
         IMG = test_img[i,:,:,0]
         GT = test_gt[i,:,:,0]
         PRED = predict[i,:,:,0]
-        
+        loss = tf.keras.losses.MeanAbsoluteError()
         
         est_count = tf.math.reduce_sum(PRED)
         GT_count = tf.math.reduce_sum(GT)
-        est_loss = GAME_recursive(np.expand_dims(PRED, -1), np.expand_dims(GT, -1), 0, 6)
+        est_loss = loss(GT, PRED).numpy
         est_MAE =  tf.math.abs(tf.math.reduce_sum(GT) - tf.math.reduce_sum(PRED))
         
         resume.loc[i, 'GT'] = np.float32(GT_count)
