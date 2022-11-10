@@ -35,7 +35,7 @@ def mLoad_GT(paths):
     GT_lts = []
     for path in paths:
         f = h5py.File(path, 'r')
-        GT_lts.append(np.asarray([f['density']]))
+        GT_lts.append(np.asarray(f['density']))
         f.close
     
     #Obtenemos el shape maximo 
@@ -45,13 +45,8 @@ def mLoad_GT(paths):
     for i in range(len(GT_lts)):
         #Anadimos el path
         GT = GT_lts[i]
-        GT = tensorflow.pad(GT[0,:,:], pad_Tensor([mx, my], GT.shape[1:]), "CONSTANT")
-        GT = np.asarray([GT])
-        
-        #Anadimosla dimension extra
-        swapped = np.moveaxis(GT, 0, 2)  
-        arr4d = np.expand_dims(swapped, 0)
-        GT_lts[i] = arr4d    
+        GT = tensorflow.pad(GT, pad_Tensor([mx, my], GT.shape), "CONSTANT")
+        GT_lts[i] = tensorflow.expand_dims(GT, 0)    
         
     
     tt = nn.layers.Concatenate(axis=0)(GT_lts)  
@@ -72,23 +67,17 @@ def mLoad_Img(paths):
     GT_lts = []
     for path in paths:
         img_path = str(path).replace('.h5','.jpg').replace('ground_truth_density','images').replace('GT_IMG_', 'IMG_')
-        img = io.imread(img_path, as_gray=True)
-        GT_lts.append(np.asarray([img.astype(np.float64)]))
+        img = io.imread(img_path, as_gray = True)
+        GT_lts.append(img.astype(np.float64))
     
     #Obtenemos el shape maximo 
     mx, my = max_shape(GT_lts)
     
     
     for i in range(len(GT_lts)):
-        #Anadimos el path
         GT = GT_lts[i]
-        GT = tensorflow.pad(GT[0,:,:], pad_Tensor([mx, my], GT.shape[1:]), "CONSTANT")
-        GT = np.asarray([GT])
-        
-        #Anadimosla dimension extra
-        swapped = np.moveaxis(GT, 0, 2)  
-        arr4d = np.expand_dims(swapped, 0)
-        GT_lts[i] = arr4d    
+        GT = tensorflow.pad(GT, pad_Tensor([mx, my], GT.shape), "CONSTANT")
+        GT_lts[i] = tensorflow.expand_dims(GT, 0)   
         
     
     tt = nn.layers.Concatenate(axis=0)(GT_lts)  
@@ -105,8 +94,8 @@ def max_shape(shape_lts):
     shp_y = []
 
     for ff in shape_lts:
-        shp_x.append(ff.shape[1])
-        shp_y.append(ff.shape[2])
+        shp_x.append(ff.shape[0])
+        shp_y.append(ff.shape[1])
     
     return max(shp_x), max(shp_y)
         
@@ -126,6 +115,7 @@ def pad_Tensor(max_shp, mshape):
     
     PD_X = []
     PD_Y = []
+    tt = []
     
     if (np.mod(pd_x, 2)) == 1:
         pd_x = int(pd_x/2)
@@ -140,9 +130,10 @@ def pad_Tensor(max_shp, mshape):
     else:
         pd_y = int(pd_y/2)
         PD_Y = [pd_y, pd_y]
-    
-    return tensorflow.constant([PD_X, PD_Y])
         
+    return tensorflow.constant([PD_X, PD_Y])
+    
+     
         
         
     
