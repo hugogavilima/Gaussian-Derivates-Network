@@ -254,13 +254,13 @@ class Betsy(tf.keras.Model):
     #x = self.BN_9(x)
     #x = tf.keras.activations.relu(x)
     
-    x = self.gaussian10(x)
-    x = self.BN_10(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.gaussian10(x)
+    #x = self.BN_10(x)
+    #x = tf.keras.activations.relu(x)
     
-    x = self.gaussian11(x) 
-    x = self.BN_11(x)
-    x = tf.keras.activations.relu(x)
+    #x = self.gaussian11(x) 
+    #x = self.BN_11(x)
+    #x = tf.keras.activations.relu(x)
     
     x = self.gaussian12(x)
     x = self.BN_12(x)
