@@ -46,7 +46,7 @@ def mLoad_GT(paths):
         #Anadimos el path
         GT = GT_lts[i]
         GT = tensorflow.pad(GT, pad_Tensor([mx, my], GT.shape), "CONSTANT")
-        GT_lts[i] = tensorflow.expand_dims(GT, 0)    
+        GT_lts[i] = tensorflow.expand_dims(tensorflow.expand_dims(GT, 0), -1)   
         
     
     tt = nn.layers.Concatenate(axis=0)(GT_lts)  
@@ -77,7 +77,7 @@ def mLoad_Img(paths):
     for i in range(len(GT_lts)):
         GT = GT_lts[i]
         GT = tensorflow.pad(GT, pad_Tensor([mx, my], GT.shape), "CONSTANT")
-        GT_lts[i] = tensorflow.expand_dims(GT, 0)   
+        GT_lts[i] = tensorflow.expand_dims(tensorflow.expand_dims(GT, 0), -1)
         
     
     tt = nn.layers.Concatenate(axis=0)(GT_lts)  
