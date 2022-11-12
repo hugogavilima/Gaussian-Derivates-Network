@@ -24,7 +24,6 @@ def gaussian_filter_density(gts):
         return density
 
     
-    leafsize = 2048
     gts_points =  np.transpose(gts.nonzero())
     #tree = KDTree(gts_points, leafsize= leafsize)
 
@@ -48,7 +47,7 @@ def gaussian_filter_density(gts):
         density += gaussian_filter(pt2d, sigma, mode='constant')
         np.append(result, sigma)
         
-    return density, result
+    return sigma, result
 
 
 """
@@ -83,7 +82,6 @@ def GT_generation(img_paths):
         name = str(img_path).replace('.jpg','.h5').replace('images','ground_truth_density')
         with h5py.File(name, 'w') as hf:
             hf['density'] = fg
-            hf['distance'] = distance
 
         path_names.append(name)
     

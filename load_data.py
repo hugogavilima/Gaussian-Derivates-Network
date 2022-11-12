@@ -1,8 +1,45 @@
-import tensorflow
-from tensorflow import keras as nn
+import tensorflow as tf
+from pathlib import Path
+from skimage.transform import resize
 import numpy as np
 import h5py
 from skimage import io
+
+def Load_Data(path):
+    
+    total_tf_split = []
+    
+    for path in Path(path).glob('*.jpg'):
+        #Image
+        img = tf.keras.utils.load_img(path, color_mode = "grayscale", target_size=(1024, 1024), interpolation='bicubic')
+        img = np.asarray(img)/255
+        
+        #GT_density
+        h5_path = str(path).replace('.jpg','.h5').replace('images', 'ground_truth_density')
+        f = h5py.File(h5_path, 'r')
+        gt = resize(np.asarray(f['density']), (1024, 1024))
+        f.close
+        
+        #expland dimension
+        img = np.expand_dims(img, -1)
+        gt = np.expand_dims(gt, -1)
+        
+        #concat channel 
+        tt = np.concatenate((img, gt), axis = -1)
+        
+        #split and concat tensor
+        along_x = tf.split(tt, 8, axis=0)
+        along_y = []
+        for k in along_x:
+            along_y.extend(tf.split(k, 8, axis=1))
+
+        total_split = [tf.expand_dims(i, 0) for i in along_y]
+        tf_split = tf.concat(total_split, axis=0)
+        
+        #Save
+        total_tf_split.append(tf_split) 
+    
+    return tf.concat(total_tf_split, axis=0)
 
 
 """
@@ -14,8 +51,8 @@ def mLoad_Pred(path):
     
     #Cargamos el array usando su ubicacion. Sabemos que esta guardados en un h5file
     f = h5py.File(path, 'r')
-    predict_train = tensorflow.constant(np.asarray(f['train']))
-    predict_test = tensorflow.constant(np.asarray(f['test']))
+    predict_train = tf.constant(np.asarray(f['train']))
+    predict_test = tf.constant(np.asarray(f['test']))
     f.close
       
     return predict_train, predict_test
@@ -45,11 +82,11 @@ def mLoad_GT(paths):
     for i in range(len(GT_lts)):
         #Anadimos el path
         GT = GT_lts[i]
-        GT = tensorflow.pad(GT, pad_Tensor([mx, my], GT.shape), "CONSTANT")
-        GT_lts[i] = tensorflow.expand_dims(tensorflow.expand_dims(GT, 0), -1)   
+        GT = tf.pad(GT, pad_Tensor([mx, my], GT.shape), "CONSTANT")
+        GT_lts[i] = tf.expand_dims(tf.expand_dims(GT, 0), -1)   
         
     
-    tt = nn.layers.Concatenate(axis=0)(GT_lts)  
+    tt = tf.concat(axis=0)(GT_lts)  
     return tt
 
 
@@ -76,11 +113,11 @@ def mLoad_Img(paths):
     
     for i in range(len(GT_lts)):
         GT = GT_lts[i]
-        GT = tensorflow.pad(GT, pad_Tensor([mx, my], GT.shape), "CONSTANT")
-        GT_lts[i] = tensorflow.expand_dims(tensorflow.expand_dims(GT, 0), -1)
+        GT = tf.pad(GT, pad_Tensor([mx, my], GT.shape), "CONSTANT")
+        GT_lts[i] = tf.expand_dims(tf.expand_dims(GT, 0), -1)
         
     
-    tt = nn.layers.Concatenate(axis=0)(GT_lts)  
+    tt = tf.concat(axis=0)(GT_lts)  
     return tt
     
 """
@@ -131,7 +168,7 @@ def pad_Tensor(max_shp, mshape):
         pd_y = int(pd_y/2)
         PD_Y = [pd_y, pd_y]
         
-    return tensorflow.constant([PD_X, PD_Y])
+    return tf.constant([PD_X, PD_Y])
     
      
         
