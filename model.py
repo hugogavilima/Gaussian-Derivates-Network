@@ -14,7 +14,7 @@ class Betsy(tf.keras.Model):
     self.gaussian1 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size,   
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[0],
@@ -25,7 +25,7 @@ class Betsy(tf.keras.Model):
     self.gaussian2 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[1],
@@ -36,7 +36,7 @@ class Betsy(tf.keras.Model):
     self.gaussian3 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size,  
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[2],
@@ -47,7 +47,7 @@ class Betsy(tf.keras.Model):
     self.gaussian4 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[3],
@@ -58,7 +58,7 @@ class Betsy(tf.keras.Model):
     self.gaussian5 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[4],
@@ -69,7 +69,7 @@ class Betsy(tf.keras.Model):
     self.gaussian6 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[5],
@@ -80,7 +80,7 @@ class Betsy(tf.keras.Model):
     self.gaussian7 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[6],
@@ -91,7 +91,7 @@ class Betsy(tf.keras.Model):
     self.gaussian8 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[7],
@@ -102,7 +102,7 @@ class Betsy(tf.keras.Model):
     self.gaussian9 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[8],
@@ -113,7 +113,7 @@ class Betsy(tf.keras.Model):
     self.gaussian10 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[9],
@@ -124,7 +124,7 @@ class Betsy(tf.keras.Model):
     self.gaussian11 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[10],
@@ -135,7 +135,7 @@ class Betsy(tf.keras.Model):
     self.gaussian12 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[11],
@@ -146,7 +146,7 @@ class Betsy(tf.keras.Model):
     self.gaussian13 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[11],
@@ -157,7 +157,7 @@ class Betsy(tf.keras.Model):
     self.gaussian14 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[11],
@@ -168,7 +168,7 @@ class Betsy(tf.keras.Model):
     self.gaussian15 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[11],
@@ -179,7 +179,7 @@ class Betsy(tf.keras.Model):
     self.gaussian16 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
-                                   order=2, 
+                                   order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
                                    #sigma_init= input_sigmas[11],
@@ -399,7 +399,13 @@ def GAME_loss(preds, gts):
     res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 4))
   return tf.math.divide(res2, tf.cast(2*len(gts), tf.float32))
 
-
+def Loss(y_true, y_pred):
+  A = tf.cast(tf.math.abs(y_true), tf.float32)
+  B = tf.cast(tf.math.abs(y_pred), tf.float32)
+  C = tf.math.square(A - B)
+  D = tf.math.reduce_sum(C)
+    
+  return tf.sqrt(D)
 
 
 

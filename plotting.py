@@ -27,10 +27,10 @@ def count_estimate(test_img, test_gt, predict, name, type):
         PRED = predict[i,:,:,0]
         
         
-        est_count = tf.math.reduce_sum(PRED)
-        GT_count = tf.math.reduce_sum(GT)
+        est_count = tf.cast(tf.math.reduce_sum(PRED), tf.float32)
+        GT_count = tf.cast(tf.math.reduce_sum(GT), tf.float32)
         est_loss = loss(GT, PRED).numpy()
-        est_MAE =  tf.math.abs(tf.math.reduce_sum(GT) - tf.math.reduce_sum(PRED))
+        est_MAE =  tf.math.abs(est_count - GT_count)
         
         resume.loc[i, 'GT'] = np.float32(GT_count)
         resume.loc[i, 'Pred'] = np.float32(est_count)
@@ -40,7 +40,7 @@ def count_estimate(test_img, test_gt, predict, name, type):
         
         plotting_testing(IMG, GT, PRED, GT_count, est_count, est_loss, est_MAE, i, path, type) 
     
-    resume.to_excel(os.path.join(path, name + '.xlsx'))  
+    resume.to_excel(os.path.join(path, name + '_' + type + '_.xlsx'))  
                    
       
                 
@@ -83,9 +83,10 @@ def deploy_layers(model):
   for ly in layers:
     try:
         ly.deploy()
-        print(ly, ' deploy: ', ly.deployed)
+        #print(ly, ' deploy: ', ly.deployed)
     except:
-        print(ly, 'is no a Gaussian Layer')
+        #print(ly, 'is no a Gaussian Layer')
+        None
         
 
 def train_layers(model):
@@ -93,7 +94,8 @@ def train_layers(model):
   for ly in layers:
     try:
         ly.to_train()
-        print(ly, ' deploy: ', ly.deployed)
+        #print(ly, ' deploy: ', ly.deployed)
     except:
-        print(ly, 'is no a Gaussian Layer')
+        #print(ly, 'is no a Gaussian Layer')
+        None
         

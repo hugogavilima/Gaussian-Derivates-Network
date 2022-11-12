@@ -28,10 +28,10 @@ def Load_Data(path):
         tt = np.concatenate((img, gt), axis = -1)
         
         #split and concat tensor
-        along_x = tf.split(tt, 8, axis=0)
+        along_x = tf.split(tt, 4, axis=0)
         along_y = []
         for k in along_x:
-            along_y.extend(tf.split(k, 8, axis=1))
+            along_y.extend(tf.split(k, 4, axis=1))
 
         total_split = [tf.expand_dims(i, 0) for i in along_y]
         tf_split = tf.concat(total_split, axis=0)
