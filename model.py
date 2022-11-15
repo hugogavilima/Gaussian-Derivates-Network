@@ -99,7 +99,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian8')
         
-    self.gaussian9 = FTGDConvLayer(filters=128, 
+    self.gaussian9 = FTGDConvLayer(filters=256, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=3, 
@@ -110,7 +110,7 @@ class Betsy(tf.keras.Model):
                                    use_bias=True,
                                    name = 'Gaussian9')
     
-    self.gaussian10 = FTGDConvLayer(filters=128, 
+    self.gaussian10 = FTGDConvLayer(filters=256, 
                                    kernel_size = input_kernel_size, 
                                    num_basis= 1, 
                                    order=3, 

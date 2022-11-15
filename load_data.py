@@ -11,27 +11,27 @@ def Load_Data(path):
     
     for path in Path(path).glob('*.jpg'):
         #Image
-        img = tf.keras.utils.load_img(path, color_mode = "grayscale", target_size=(1024, 1024), interpolation='bicubic')
+        img = tf.keras.utils.load_img(path, color_mode = "rgb", target_size=(256, 256), interpolation='bicubic')
         img = np.asarray(img)/255
         
         #GT_density
         h5_path = str(path).replace('.jpg','.h5').replace('images', 'ground_truth_density')
         f = h5py.File(h5_path, 'r')
-        gt = resize(np.asarray(f['density']), (1024, 1024))
+        gt = resize(np.asarray(f['density']), (256, 256))
         f.close
         
         #expland dimension
-        img = np.expand_dims(img, -1)
+        #img = np.expand_dims(img, -1)
         gt = np.expand_dims(gt, -1)
         
         #concat channel 
         tt = np.concatenate((img, gt), axis = -1)
         
         #split and concat tensor
-        along_x = tf.split(tt, 4, axis=0)
+        along_x = tf.split(tt, 1, axis=0)
         along_y = []
         for k in along_x:
-            along_y.extend(tf.split(k, 4, axis=1))
+            along_y.extend(tf.split(k, 1, axis=1))
 
         total_split = [tf.expand_dims(i, 0) for i in along_y]
         tf_split = tf.concat(total_split, axis=0)
