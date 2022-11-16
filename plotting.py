@@ -22,13 +22,13 @@ def count_estimate(test_img, test_gt, predict, name, type):
     resume = pd.DataFrame({'GT':[], 'Pred':[], 'Loss':[], 'MAE': []})
     progress = progressbar.ProgressBar()
     for i in progress(range(N)):
-        IMG = test_img[i,:,:,0]
+        IMG = test_img[i,:,:,0:3]
         GT = test_gt[i,:,:,0]
         PRED = predict[i,:,:,0]
         
         
-        est_count = tf.cast(tf.math.reduce_sum(PRED), tf.float32)
-        GT_count = tf.cast(tf.math.reduce_sum(GT), tf.float32)
+        est_count = 16*tf.cast(tf.math.reduce_sum(PRED), tf.float32)
+        GT_count = 16*tf.cast(tf.math.reduce_sum(GT), tf.float32)
         est_loss = loss(GT, PRED).numpy()
         est_MAE =  tf.math.abs(est_count - GT_count)
         

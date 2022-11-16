@@ -22,7 +22,7 @@ def Load_Data(path):
         
         #expland dimension
         #img = np.expand_dims(img, -1)
-        gt = np.expand_dims(gt, -1)
+        gt = np.expand_dims(16*gt, -1)
         
         #concat channel 
         tt = np.concatenate((img, gt), axis = -1)
