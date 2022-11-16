@@ -299,7 +299,7 @@ def initWeights(input_channels, output_channels, num_basis, order, separated):
 
     else:
     
-        weights = tensorflow.Variable(initial_value = tensorflow.random.uniform(shape = (int(num_basis), int(input_channels),   int(output_channels/num_basis), int(numFiltersPerBasis)), minval = -5e-4, maxval = 5e-4, dtype = 'float'), name = 'clWeights', trainable = True)
+        weights = tensorflow.Variable(initial_value = tensorflow.random.uniform(shape = (int(num_basis), int(input_channels),   int(output_channels/num_basis), int(numFiltersPerBasis)), minval = -5e-2, maxval = 5e-2, dtype = 'float'), name = 'clWeights', trainable = True)
         
     return weights
 
