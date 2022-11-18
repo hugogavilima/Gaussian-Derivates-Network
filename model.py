@@ -13,7 +13,7 @@ class Betsy(tf.keras.Model):
     ###################################################################
     self.gaussian1 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size,   
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -24,7 +24,7 @@ class Betsy(tf.keras.Model):
 
     self.gaussian2 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -35,7 +35,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian3 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size,  
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -46,7 +46,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian4 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -57,7 +57,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian5 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -68,7 +68,7 @@ class Betsy(tf.keras.Model):
 
     self.gaussian6 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -79,7 +79,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian7 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -90,7 +90,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian8 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -101,7 +101,7 @@ class Betsy(tf.keras.Model):
         
     self.gaussian9 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -112,7 +112,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian10 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -123,7 +123,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian11 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -134,7 +134,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian12 = FTGDConvLayer(filters=128, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -145,7 +145,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian13 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -156,7 +156,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian14 = FTGDConvLayer(filters=64, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -167,7 +167,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian15 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 4, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -178,7 +178,7 @@ class Betsy(tf.keras.Model):
     
     self.gaussian16 = FTGDConvLayer(filters=32, 
                                    kernel_size = input_kernel_size, 
-                                   num_basis= 1, 
+                                   num_basis= 8, 
                                    order=3, 
                                    separated = False,
                                    trainability=[True, True, True],
@@ -218,68 +218,68 @@ class Betsy(tf.keras.Model):
   def call(self, input):
     #Capa de entrada
     x = self.gaussian1(input)
-    #x = self.BN_1(x)
+    x = self.BN_1(x)
     x = tf.keras.activations.relu(x)
     
     #Capas Ocultas
     x = self.gaussian2(x)
-    #x = self.BN_2(x)
+    x = self.BN_2(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian3(x) 
-    #x = self.BN_3(x)
+    x = self.BN_3(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian4(x)
-    #x = self.BN_4(x)
+    x = self.BN_4(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian5(x) 
-    #x = self.BN_5(x)
+    x = self.BN_5(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian6(x) 
-    #x = self.BN_6(x)
+    x = self.BN_6(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian7(x) 
-    #x = self.BN_7(x)
+    x = self.BN_7(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian8(x) 
-    #x = self.BN_8(x)
+    x = self.BN_8(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian9(x) 
-    #x = self.BN_9(x)
+    x = self.BN_9(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian10(x)
-    #x = self.BN_10(x)
+    x = self.BN_10(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian11(x) 
-    #x = self.BN_11(x)
+    x = self.BN_11(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian12(x)
-    #x = self.BN_12(x)
+    x = self.BN_12(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian13(x)
-    #x = self.BN_13(x)
+    x = self.BN_13(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian14(x)
-    #x = self.BN_14(x)
+    x = self.BN_14(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian15(x)
-    #x = self.BN_15(x)
+    x = self.BN_15(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian16(x)
-    #x = self.BN_16(x)
+    x = self.BN_16(x)
     x = tf.keras.activations.relu(x)
     
     x = self.pool(x)
