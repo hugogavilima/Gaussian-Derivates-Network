@@ -218,68 +218,68 @@ class Betsy(tf.keras.Model):
   def call(self, input):
     #Capa de entrada
     x = self.gaussian1(input)
-    x = self.BN_1(x)
+    #x = self.BN_1(x)
     x = tf.keras.activations.relu(x)
     
     #Capas Ocultas
     x = self.gaussian2(x)
-    x = self.BN_2(x)
+    #x = self.BN_2(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian3(x) 
-    x = self.BN_3(x)
+    #x = self.BN_3(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian4(x)
-    x = self.BN_4(x)
+    #x = self.BN_4(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian5(x) 
-    x = self.BN_5(x)
+    #x = self.BN_5(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian6(x) 
-    x = self.BN_6(x)
+    #x = self.BN_6(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian7(x) 
-    x = self.BN_7(x)
+    #x = self.BN_7(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian8(x) 
-    x = self.BN_8(x)
+    #x = self.BN_8(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian9(x) 
-    x = self.BN_9(x)
+    #x = self.BN_9(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian10(x)
-    x = self.BN_10(x)
+    #x = self.BN_10(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian11(x) 
-    x = self.BN_11(x)
+    #x = self.BN_11(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian12(x)
-    x = self.BN_12(x)
+    #x = self.BN_12(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian13(x)
-    x = self.BN_13(x)
+    #x = self.BN_13(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian14(x)
-    x = self.BN_14(x)
+    #x = self.BN_14(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian15(x)
-    x = self.BN_15(x)
+    #x = self.BN_15(x)
     x = tf.keras.activations.relu(x)
     
     x = self.gaussian16(x)
-    x = self.BN_16(x)
+    #x = self.BN_16(x)
     x = tf.keras.activations.relu(x)
     
     x = self.pool(x)
