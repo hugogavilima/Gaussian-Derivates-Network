@@ -5,116 +5,348 @@ from FTGDConvLayer import *
 
 class Betsy(tf.keras.Model):
 
-  def __init__(self, input_shape):
+  def __init__(self, input_shape, input_sigmas, input_kernel_size):
     super().__init__()
-    self.gaussian1 = FTGDConvLayer(filters=16, 
-                                   kernel_size = (7,7), 
-                                   num_basis= 4, 
-                                   order=2, 
-                                   separated = True, 
+    
+    ###################################################################
+    # GAUSSIAN LAYERS
+    ###################################################################
+    self.gaussian1 = FTGDConvLayer(filters=32, 
+                                   kernel_size = input_kernel_size,   
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[0],
+                                   random_init=True, 
+                                   use_bias=True,
                                    name = 'Gaussian1')
+
     self.gaussian2 = FTGDConvLayer(filters=32, 
-                                   kernel_size = (7,7), 
-                                   num_basis= 8, 
-                                   order=2,  
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[1],
+                                   random_init=True, 
+                                   use_bias=True,
                                    name = 'Gaussian2')
-    self.output_layer = tf.keras.layers.Conv2D(1,1, 
-                                               activation='relu',
-                                               input_shape = (input_shape[0], input_shape[1], 64))
-    self.train_op = tf.keras.optimizers.Adam(learning_rate = 0.01)
     
-    self.sMAE = sMAE()
-    self.RMSE = RMSE()
+    self.gaussian3 = FTGDConvLayer(filters=64, 
+                                   kernel_size = input_kernel_size,  
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[2],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian3')
+    
+    self.gaussian4 = FTGDConvLayer(filters=64, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[3],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian4')
+    
+    self.gaussian5 = FTGDConvLayer(filters=64, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[4],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian5')
 
-
+    self.gaussian6 = FTGDConvLayer(filters=64, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[5],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian6')
+    
+    self.gaussian7 = FTGDConvLayer(filters=128, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[6],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian7')
+    
+    self.gaussian8 = FTGDConvLayer(filters=128, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[7],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian8')
+        
+    self.gaussian9 = FTGDConvLayer(filters=128, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[8],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian9')
+    
+    self.gaussian10 = FTGDConvLayer(filters=128, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[9],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian10')
+    
+    self.gaussian11 = FTGDConvLayer(filters=128, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[10],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian11')
+    
+    self.gaussian12 = FTGDConvLayer(filters=128, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[11],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian12')
+    
+    self.gaussian13 = FTGDConvLayer(filters=64, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[11],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian12')
+    
+    self.gaussian14 = FTGDConvLayer(filters=64, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[11],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian12')
+    
+    self.gaussian15 = FTGDConvLayer(filters=32, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[11],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian12')
+    
+    self.gaussian16 = FTGDConvLayer(filters=32, 
+                                   kernel_size = input_kernel_size, 
+                                   num_basis= 1, 
+                                   order=3, 
+                                   separated = False,
+                                   trainability=[True, True, True],
+                                   #sigma_init= input_sigmas[11],
+                                   random_init=True, 
+                                   use_bias=True,
+                                   name = 'Gaussian12')
+    
+    
+    ###################################################################
+    # NORMALIZATION LAYERS
+    ###################################################################
+    
+    self.BN_1 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_1')
+    self.BN_2 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_2')
+    self.BN_3 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_3')
+    self.BN_4 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_4')
+    self.BN_5 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_5')
+    self.BN_6 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_6')
+    self.BN_7 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_7')
+    self.BN_8 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_8')
+    self.BN_9 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_9')
+    self.BN_10 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_10')
+    self.BN_11 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_11')
+    self.BN_12 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
+    self.BN_13 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
+    self.BN_14 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
+    self.BN_15 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
+    self.BN_16 = tf.keras.layers.BatchNormalization(axis=-1, name = 'BN_12')
+    
+    ###################################################################
+    # CHANNEL POOLING LAYER
+    ###################################################################
+    self.pool = Depth_MaxPool(3)
+    
+       
   def call(self, input):
+    #Capa de entrada
     x = self.gaussian1(input)
-    x = tf.keras.layers.Activation('relu')(x)
+    #x = self.BN_1(x)
+    x = tf.keras.activations.relu(x)
+    
+    #Capas Ocultas
     x = self.gaussian2(x)
-    x = tf.keras.layers.Activation('relu')(x)
-    return self.output_layer(x)
-
-  def get_loss(self, train_image, test_GT):
-    train_pred_GT = self.call(train_image)
-    return GAME_loss(train_pred_GT, test_GT)
-  
-  def get_sMAE(self, train_image, test_GT):
+    #x = self.BN_2(x)
+    x = tf.keras.activations.relu(x)
     
-    train_pred_GT = self.call(train_image)
-    self.sMAE.reset_state()
-    self.sMAE.update_state(test_GT, train_pred_GT)
+    x = self.gaussian3(x) 
+    #x = self.BN_3(x)
+    x = tf.keras.activations.relu(x)
     
-    return self.sMAE.result()
+    x = self.gaussian4(x)
+    #x = self.BN_4(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian5(x) 
+    #x = self.BN_5(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian6(x) 
+    #x = self.BN_6(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian7(x) 
+    #x = self.BN_7(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian8(x) 
+    #x = self.BN_8(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian9(x) 
+    #x = self.BN_9(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian10(x)
+    #x = self.BN_10(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian11(x) 
+    #x = self.BN_11(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian12(x)
+    #x = self.BN_12(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian13(x)
+    #x = self.BN_13(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian14(x)
+    #x = self.BN_14(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian15(x)
+    #x = self.BN_15(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.gaussian16(x)
+    #x = self.BN_16(x)
+    x = tf.keras.activations.relu(x)
+    
+    x = self.pool(x)
+    return x
+   
 
-  def get_grad(self, train_image, test_GT):
-    with tf.GradientTape() as tape:
-        tape.watch(self.gaussian1.variables)
-        tape.watch(self.gaussian2.variables)
-        tape.watch(self.output_layer.variables)
-        L = self.get_loss(train_image, test_GT)
-        g = tape.gradient(L, self.gaussian1.variables + self.gaussian2.variables)
-    return g 
-  
   def build_graph(self, input_shape):
     y = tf.keras.layers.Input(shape = input_shape)
     return tf.keras.Model(inputs=[y], 
                           outputs=self.call(y))
+
+"""
+##########################################################################################
+LAYERS:
+    En este apartado, definimos el pool layer utilizado en el modelo
+########################################################################################## 
+"""
+
+class Depth_MaxPool(tf.keras.layers.Layer):
+    def __init__(self, pool_dim, **kwargs):
+        super().__init__(**kwargs)
+        self.pool_dim = pool_dim
+    def call(self, inputs):
+        return tf.expand_dims(tf.math.reduce_max(inputs, 
+                                                 axis=self.pool_dim, 
+                                                 keepdims=False, name=None), -1, name=None)
+
+
+"""
+##########################################################################################
+METRICAS:
+    En este apartado, definimos las metricas usadas durante el entrenamiento
+########################################################################################## 
+"""
+
+def sMAE(y_true, y_pred):
+  res2 = tf.constant(0, dtype=np.float32)
     
-
-class sMAE(tf.keras.metrics.Metric):
-
-  def __init__(self, name= 'sMAE', **kwargs):
-    super(sMAE, self).__init__(name=name, **kwargs)
-    self.true_positives = self.add_weight(name='tp', initializer='zeros')
-
-  def update_state(self, y_true, y_pred, sample_weight=None):
-    
-    res2 = tf.constant(0, dtype=np.float32)
-    for i in range(len(y_pred)):
-      res2 = res2 + (GAME_recursive(y_pred[i], y_true[i], 0, 0))
+  for i in range(len(y_pred)):
+    bb = tf.math.abs(tf.math.reduce_sum(y_true[i]) - tf.math.reduce_sum(y_pred[i]))
+    res2 = tf.math.add(res2, bb) 
       
-    values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
-    values = tf.cast(values, self.dtype)
+  values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
     
-    if sample_weight is not None:
-      sample_weight = tf.cast(sample_weight, self.dtype)
-      sample_weight = tf.broadcast_to(sample_weight, values.shape)
-      #values = tf.multiply(values, sample_weight)
-      
-    self.true_positives.assign_add(values)
-
-  def result(self):
-    return self.true_positives
-
-class RMSE(tf.keras.metrics.Metric):
-
-  def __init__(self, name= 'RMSE', **kwargs):
-    super(RMSE, self).__init__(name=name, **kwargs)
-    self.true_positives = self.add_weight(name='tp', initializer='zeros')
-    
-  def update_state(self, y_true, y_pred, sample_weight=None):
-    res2 = tf.constant(0, dtype=np.float32)
-    for i in range(len(y_pred)):
-      bb = GAME_recursive(y_pred[i], y_true[i], 0, 0)
-      res2 = res2 + tf.math.square(bb)
-      
-    values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
-    values = tf.math.sqrt(values)
-    values = tf.cast(values, self.dtype)
-    
-    if sample_weight is not None:
-      sample_weight = tf.cast(sample_weight, self.dtype)
-      sample_weight = tf.broadcast_to(sample_weight, values.shape)
-      #values = tf.multiply(values, sample_weight)
-      
-    self.true_positives.assign_add(values)
-
-  def result(self):
-    return self.true_positives
-
-
-
+  return values
  
+ 
+def RMSE(y_true, y_pred):
+  res2 = tf.constant(0, dtype=np.float32)
+    
+  for i in range(len(y_pred)):
+    bb = tf.math.abs(tf.math.reduce_sum(y_true[i]) - tf.math.reduce_sum(y_pred[i]))
+    res2 = tf.math.add(res2, tf.math.square(bb)) 
+      
+  values = tf.math.divide(res2, tf.cast(len(y_pred), tf.float32))
+  values = tf.math.sqrt(values)
+    
+  return values 
+  
+  
+"""
+##########################################################################################
+FUNCION DE PERDIDA:
+    En este apartado, definimos lafuncion de perdida, como sus funciones auxiliares. 
+########################################################################################## 
+"""
+
 def adjust_dim(array):
     if array.shape[0]%2 != 0:
         array = tf.pad(array, tf.constant([[0, 1], [0, 0], [0, 0]]), "CONSTANT")
@@ -123,25 +355,26 @@ def adjust_dim(array):
     return array
 
 
+
 def four_split_tf(mtf):
     shape = mtf.shape
     x, y = shape[0], shape[1]
     
-    x2, y2 = x//2, y//2, 
+    x2, y2 = x//2, y//2
     
-    mtf4 = tf.constant(0, shape = [4, x2, y2, 1], dtype= tf.float32)
+    #mtf4 = tf.constant(0, shape = [4, x2, y2, 1], dtype= tf.float32)
     sumi = tf.concat([tf.expand_dims(mtf[0:x2, 0:y2, :], axis=0),
                       tf.expand_dims(mtf[0:x2, y2:, :], axis=0),
                       tf.expand_dims(mtf[x2:, 0:y2, :], axis=0),
                       tf.expand_dims(mtf[x2:, y2:, :], axis=0)], 0)
-    mtf4 = mtf4 + sumi
+    #mtf4 = mtf4 + sumi
     
-    return mtf4
+    return sumi
 
 
 def GAME_recursive(density, gt, currentLevel, targetLevel):
     if currentLevel == targetLevel:
-        game = tf.math.abs(tf.math.reduce_sum(density) - tf.math.reduce_sum(gt))
+        game = tf.math.abs(-tf.math.reduce_sum(density) + tf.math.reduce_sum(gt))
         return game
     
     else:
@@ -159,43 +392,20 @@ def GAME_recursive(density, gt, currentLevel, targetLevel):
         
         return res
 
+  
 def GAME_loss(preds, gts):
   res2 = tf.constant(0, dtype=np.float32)
   for i in range(len(gts)):
-    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 0))
-  return tf.math.divide(res2, tf.cast(len(gts), tf.float32))
+    res2 = res2 + (GAME_recursive(preds[i], gts[i], 0, 4))
+  return tf.math.divide(res2, tf.cast(2*len(gts), tf.float32))
 
-
-
-#Corriegele, esta funcion debe tambien tomar el path de la imagen, y con esto hacerle el grafico. 
-#Esta función ebe ser más propia para identificar el path de la imagen. 
-def plotting(i, test_img):
-    font = {'color':  'black','weight': 'normal','size': 16}
-
-    fig = plt.figure(figsize=(16, 4), constrained_layout=True)
-    ax1 = fig.add_subplot(1,3,1)
-    ax1.imshow(test_img[i,:,:,0], cmap = 'gray')
-    ax1.axis('off')
-    ax1.set_title('Imagen Real', fontdict=font)
-    ax1.text(0.1, -0.1, 'right bottom',
-            horizontalalignment='right',
-            verticalalignment='top',
-            transform=ax1.transAxes, )
-
-    ax2 = fig.add_subplot(1,3,2)
-    ax2.set_title('GT', fontdict=font)
-    ax2.imshow(test_GT[i,:,:,0], interpolation='gaussian')
-    ax2.axis('off')
-
-    ax3 = fig.add_subplot(1,3,3)
-    ax3.set_title('Densidad Estimada', fontdict=font)
-    ax3.imshow(tt[i,:,:,0], interpolation='gaussian')
-    ax3.axis('off')
-
-
-    fig.savefig('plots/test_' + str(i) + '.png')
-
-  
+def Loss(y_true, y_pred):
+  A = tf.cast(tf.math.abs(y_true), tf.float32)
+  B = tf.cast(tf.math.abs(y_pred), tf.float32)
+  C = tf.math.square(A - B)
+  D = tf.math.reduce_sum(C)
+    
+  return tf.sqrt(D)
 
 
 

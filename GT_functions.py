@@ -24,9 +24,8 @@ def gaussian_filter_density(gts):
         return density
 
     
-    leafsize = 2048
     gts_points =  np.transpose(gts.nonzero())
-    tree = KDTree(gts_points, leafsize= leafsize)
+    #tree = KDTree(gts_points, leafsize= leafsize)
 
     result = np.array([], dtype = np.double)
     
@@ -37,17 +36,18 @@ def gaussian_filter_density(gts):
         except:
             print(pt)
 
-        distances, locations = tree.query(pt, k=5)
+        #distances, locations = tree.query(pt, k=5)
         if gt_count > 1:
-           sigma = (distances[1] + distances[2] + distances[3])*0.1
-           #sigma = 1
+           #sigma = (distances[1] + distances[2] + distances[3])*0.1
+           sigma = 15
         else:
-           sigma = np.average(np.array(gts.shape))/2./2. #case: 1 point
+           #sigma = np.average(np.array(gts.shape))/2./2. #case: 1 point
+           sigma = 15
 
         density += gaussian_filter(pt2d, sigma, mode='constant')
         np.append(result, sigma)
         
-    return density, result
+    return sigma, result
 
 
 """
@@ -59,7 +59,6 @@ GT_generation:
 """
 def GT_generation(img_paths):
     progress = progressbar.ProgressBar()
-    path_names = []
     for img_path in progress(img_paths):
 
         mat = io.loadmat(str(img_path).replace('.jpg','.mat').replace('images','ground_truth').replace('IMG_','GT_IMG_'))
@@ -82,11 +81,7 @@ def GT_generation(img_paths):
         name = str(img_path).replace('.jpg','.h5').replace('images','ground_truth_density')
         with h5py.File(name, 'w') as hf:
             hf['density'] = fg
-            hf['distance'] = distance
 
-        path_names.append(name)
-    
-    return path_names
 
 
 def ls_paths(PTH):
